@@ -6,11 +6,17 @@ interface PersonalizationProps {
   basePrice: number;
   surcharge: number;
   onUpdate: (total: number, text: string) => void;
+  dict?: any;
 }
 
-export default function PersonalizationModule({ basePrice, surcharge, onUpdate }: PersonalizationProps) {
+export default function PersonalizationModule({ basePrice, surcharge, onUpdate, dict }: PersonalizationProps) {
   const [isPersonalized, setIsPersonalized] = useState(false);
   const [text, setText] = useState("");
+
+  const t = dict || {
+    engraving: "Custom Engraving",
+    engraving_placeholder: "Enter text for engraving"
+  };
 
   const handleToggle = (checked: boolean) => {
     setIsPersonalized(checked);
@@ -32,7 +38,7 @@ export default function PersonalizationModule({ basePrice, surcharge, onUpdate }
           checked={isPersonalized}
           onChange={(e) => handleToggle(e.target.checked)}
         />
-        <span className="text-lg font-medium text-custom-charcoal">Add Custom Engraving (+{surcharge.toFixed(2)} BGN)</span>
+        <span className="text-lg font-medium text-custom-charcoal">{t.engraving} (+{surcharge.toFixed(2)} BGN)</span>
       </label>
 
       {isPersonalized && (
@@ -43,7 +49,7 @@ export default function PersonalizationModule({ basePrice, surcharge, onUpdate }
             maxLength={20}
             value={text}
             onChange={handleTextChange}
-            placeholder="e.g., John & Mary"
+            placeholder={t.engraving_placeholder}
             className="w-full px-4 py-3 bg-custom-parchment border border-gray-200 rounded-lg text-custom-charcoal placeholder-gray-400 focus:outline-none focus:border-custom-forest focus:ring-1 focus:ring-custom-forest transition-colors"
           />
           <div className="text-right text-xs text-custom-muted mt-2">

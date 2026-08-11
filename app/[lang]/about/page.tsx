@@ -1,6 +1,9 @@
 import Image from "next/image";
+import { getDictionary } from "@/dictionaries/getDictionary";
 
-export default function AboutPage() {
+export default async function AboutPage({ params }: { params: { lang: string } }) {
+  const dict = await getDictionary(params.lang as any);
+
   return (
     <div className="flex flex-col items-center w-full">
       {/* Hero Section */}
@@ -10,10 +13,10 @@ export default function AboutPage() {
         
         <div className="relative z-10 max-w-4xl mt-12">
           <h2 className="font-serif text-4xl md:text-5xl text-custom-forest font-bold mb-4 drop-shadow-sm">
-            OUR STORY
+            {dict.about.title}
           </h2>
           <p className="text-xl text-custom-charcoal/80 font-serif italic">
-            Generations of dedication to the wood.
+            {dict.about.subtitle}
           </p>
         </div>
       </section>
@@ -23,23 +26,21 @@ export default function AboutPage() {
         <div className="bg-custom-cream rounded-xl shadow-xl shadow-custom-forest/5 p-8 md:p-16 border border-white/50">
           
           <div className="prose prose-lg prose-amber mx-auto">
-            <h3 className="font-serif text-3xl text-custom-forest mb-6 text-center">From Kazanlak with Love</h3>
+            <h3 className="font-serif text-3xl text-custom-forest mb-6 text-center">{dict.about.heading}</h3>
             <p className="text-custom-charcoal/80 leading-relaxed mb-6">
-              Nestled in the heart of the Rose Valley, our family workshop in Kazanlak has been shaping wood into art for over three generations. What started as a small endeavor by our grandfather carving simple spoons and bowls, has blossomed into a lifelong dedication to preserving the intricate, spiritual art of Bulgarian woodcarving.
+              {dict.about.p1}
             </p>
             <p className="text-custom-charcoal/80 leading-relaxed mb-6">
-              We specialize in Orthodox Christian iconography, breathing life and reverence into every piece of walnut, oak, and linden we touch. Each stroke of the chisel is guided by centuries of tradition, yet crafted with a distinct, modern precision that ensures our pieces stand the test of time.
+              {dict.about.p2}
             </p>
             <div className="my-12 border-l-4 border-custom-gold pl-6 py-2">
               <p className="text-xl font-serif text-custom-forest italic m-0">
-                "Wood is alive. Our job is not to force it into a shape, but to reveal the story it already holds within its grain."
+                {dict.about.quote}
               </p>
             </div>
-            <p className="text-custom-charcoal/80 leading-relaxed mb-6">
-              Because true art cannot be rushed, many of our pieces are <strong>Made to Order</strong>. This allows us to pour our complete focus into your specific commission, offering deep personalization such as custom engravings on the back of our plaques and icons.
-            </p>
+            <p className="text-custom-charcoal/80 leading-relaxed mb-6" dangerouslySetInnerHTML={{ __html: dict.about.p3 }} />
             <p className="text-custom-charcoal/80 leading-relaxed">
-              When you purchase from us, you aren't just buying decor. You are taking home a piece of Bulgarian heritage, crafted with patience, reverence, and an unwavering commitment to quality.
+              {dict.about.p4}
             </p>
           </div>
 

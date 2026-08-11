@@ -18,6 +18,32 @@
     "made_to_order": "Made to Order",
     "view": "View"
   },
+  "about": {
+    "title": "OUR STORY",
+    "subtitle": "Generations of dedication to the wood.",
+    "heading": "From Kazanlak with Love",
+    "p1": "Nestled in the heart of the Rose Valley, our family workshop in Kazanlak has been shaping wood into art for over three generations. What started as a small endeavor by our grandfather carving simple spoons and bowls, has blossomed into a lifelong dedication to preserving the intricate, spiritual art of Bulgarian woodcarving.",
+    "p2": "We specialize in Orthodox Christian iconography, breathing life and reverence into every piece of walnut, oak, and linden we touch. Each stroke of the chisel is guided by centuries of tradition, yet crafted with a distinct, modern precision that ensures our pieces stand the test of time.",
+    "quote": "\"Wood is alive. Our job is not to force it into a shape, but to reveal the story it already holds within its grain.\"",
+    "p3": "Because true art cannot be rushed, many of our pieces are <strong>Made to Order</strong>. This allows us to pour our complete focus into your specific commission, offering deep personalization such as custom engravings on the back of our plaques and icons.",
+    "p4": "When you purchase from us, you aren't just buying decor. You are taking home a piece of Bulgarian heritage, crafted with patience, reverence, and an unwavering commitment to quality."
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "Have a question about a custom order, our process, or shipping? Reach out to our workshop directly.",
+    "workshop_details": "Workshop Details",
+    "address_label": "Address",
+    "address": "Oreshaka 9<br/>6100 Kazanlak<br/>Bulgaria",
+    "phone_label": "Phone",
+    "email_label": "Email",
+    "send_message_title": "Send a Message",
+    "name_label": "Name",
+    "name_placeholder": "Your name",
+    "email_placeholder": "your@email.com",
+    "message_label": "Message",
+    "message_placeholder": "How can we help you?",
+    "send_button": "Send Message"
+  },
   "cart": {
     "title": "Your Cart",
     "empty": "Your cart is empty.",
@@ -36,7 +62,11 @@
     "wood_finish": "Wood Finish",
     "size": "Size",
     "engraving": "Custom Engraving",
-    "engraving_placeholder": "Enter text for engraving (+$10.00)"
+    "engraving_placeholder": "Enter text for engraving (+$10.00)",
+    "made_to_order_takes": "Made to Order (Takes 2-3 weeks)",
+    "total": "Total",
+    "fallback_name": "Orthodox Icon Relief - St. George",
+    "fallback_desc": "A meticulously hand-carved wooden relief depicting St. George. Crafted from premium walnut wood, finished with natural oils for lasting durability and a rich aesthetic."
   },
   "footer": {
     "rights": "All rights reserved."
