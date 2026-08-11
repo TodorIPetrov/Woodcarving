@@ -65,12 +65,16 @@
     "size": "Size",
     "engraving": "Custom Engraving",
     "engraving_placeholder": "Enter text for engraving (+$10.00)",
+    "engraving_label": "Engraving Text (Max 20 characters)",
     "made_to_order_takes": "Made to Order (Takes 2-3 weeks)",
     "total": "Total",
     "fallback_name": "Orthodox Icon Relief - St. George",
     "fallback_desc": "A meticulously hand-carved wooden relief depicting St. George. Crafted from premium walnut wood, finished with natural oils for lasting durability and a rich aesthetic."
   },
   "footer": {
-    "rights": "All rights reserved."
+    "contact_info": "Contact Info",
+    "secure_payment": "Secure Payment",
+    "rights": "All rights reserved.",
+    "map_placeholder": "Google Map"
   }
 }

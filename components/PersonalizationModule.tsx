@@ -15,7 +15,8 @@ export default function PersonalizationModule({ basePrice, surcharge, onUpdate, 
 
   const t = dict || {
     engraving: "Custom Engraving",
-    engraving_placeholder: "Enter text for engraving"
+    engraving_placeholder: "Enter text for engraving",
+    engraving_label: "Engraving Text (Max 20 characters)"
   };
 
   const handleToggle = (checked: boolean) => {
@@ -43,7 +44,7 @@ export default function PersonalizationModule({ basePrice, surcharge, onUpdate, 
 
       {isPersonalized && (
         <div className="animate-fade-in mt-4">
-          <label className="block text-sm text-custom-muted mb-2">Engraving Text (Max 20 characters)</label>
+          <label className="block text-sm text-custom-muted mb-2">{t.engraving_label}</label>
           <input
             type="text"
             maxLength={20}

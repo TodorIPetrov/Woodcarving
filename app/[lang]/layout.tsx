@@ -85,18 +85,18 @@ export default async function RootLayout({
           <footer className="bg-custom-forest text-custom-cream py-12 mt-20">
             <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 text-sm">
               <div>
-                <h4 className="font-serif text-lg text-custom-gold mb-4">Contact Info</h4>
+                <h4 className="font-serif text-lg text-custom-gold mb-4">{dict.footer.contact_info}</h4>
                 <p>+359 87 843 7966</p>
                 <p>Oreshaka 9, Kazanlak</p>
               </div>
               <div className="text-center">
                 <div className="bg-white/10 h-24 w-48 mx-auto flex items-center justify-center rounded-lg border border-white/20 mb-4">
                   {/* Map Placeholder */}
-                  <span className="text-white/50 text-xs">Google Map</span>
+                  <span className="text-white/50 text-xs">{dict.footer.map_placeholder || "Google Map"}</span>
                 </div>
               </div>
               <div className="text-right">
-                <h4 className="font-serif text-lg text-custom-gold mb-4">Secure Payment</h4>
+                <h4 className="font-serif text-lg text-custom-gold mb-4">{dict.footer.secure_payment}</h4>
                 <p className="text-custom-muted text-xs">Visa, Mastercard, Maestro, Stripe</p>
               </div>
             </div>
