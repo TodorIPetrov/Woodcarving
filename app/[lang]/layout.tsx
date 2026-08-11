@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import "./globals.css";
+import "../globals.css";
 
 export const metadata: Metadata = {
   title: "Kazanlak Woodcarving | Artisanal Woodcrafts",
@@ -10,17 +10,23 @@ import { Inter, Playfair_Display } from "next/font/google";
 import { CartProvider } from "@/components/CartContext";
 import CartDrawer from "@/components/CartDrawer";
 import Link from "next/link";
+import { getDictionary } from "@/dictionaries/getDictionary";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 const inter = Inter({ subsets: ["latin"], variable: '--font-inter' });
 const playfair = Playfair_Display({ subsets: ["latin"], variable: '--font-playfair' });
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
+  params,
 }: Readonly<{
   children: React.ReactNode;
+  params: { lang: string };
 }>) {
+  const dict = await getDictionary(params.lang as any);
+
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
+    <html lang={params.lang} className={`${inter.variable} ${playfair.variable}`}>
       <head>
         <script
           type="application/ld+json"
@@ -48,15 +54,15 @@ export default function RootLayout({
             <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
               {/* Left/Mobile Nav placeholder */}
               <div className="hidden md:flex flex-1 items-center gap-2">
-                <span className="text-xl">🇧🇬</span>
+                <LanguageSwitcher currentLang={params.lang} />
               </div>
               
               {/* Centered Navigation */}
               <nav className="flex-1 flex justify-center space-x-6 md:space-x-8 text-sm font-semibold tracking-wide uppercase mt-4 md:mt-0 order-3 md:order-2">
-                <Link href="/" className="hover:text-custom-gold transition-colors pb-1">Home</Link>
-                <Link href="/catalogue" className="hover:text-custom-gold transition-colors pb-1">Catalogue</Link>
-                <Link href="/about" className="hover:text-custom-gold transition-colors pb-1">Our Story</Link>
-                <Link href="/contact" className="hover:text-custom-gold transition-colors pb-1">Contact</Link>
+                <Link href={`/${params.lang}`} className="hover:text-custom-gold transition-colors pb-1">{dict.nav.home}</Link>
+                <Link href={`/${params.lang}/catalogue`} className="hover:text-custom-gold transition-colors pb-1">{dict.nav.catalogue}</Link>
+                <Link href={`/${params.lang}/about`} className="hover:text-custom-gold transition-colors pb-1">{dict.nav.about}</Link>
+                <Link href={`/${params.lang}/contact`} className="hover:text-custom-gold transition-colors pb-1">{dict.nav.contact}</Link>
               </nav>
 
               {/* Right Icons */}
@@ -95,13 +101,13 @@ export default function RootLayout({
               </div>
             </div>
             <div className="max-w-7xl mx-auto px-4 mt-8 pt-8 border-t border-white/10 text-center text-xs text-custom-sage flex justify-between">
-              <p>&copy; {new Date().getFullYear()} Kazanlak Woodcarving.</p>
+              <p>&copy; {new Date().getFullYear()} Kazanlak Woodcarving. {dict.footer.rights}</p>
               <div className="flex space-x-2">
                 <span>F</span> <span>I</span> <span>T</span>
               </div>
             </div>
           </footer>
-          <CartDrawer />
+          <CartDrawer dict={dict.cart} lang={params.lang} />
         </CartProvider>
       </body>
     </html>

@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { db } from "@/lib/firebase/admin";
+import { getDictionary } from "@/dictionaries/getDictionary";
 
-export default async function Home() {
+export default async function Home({ params }: { params: { lang: string } }) {
+  const dict = await getDictionary(params.lang as any);
+  
   let products: any[] = [];
   try {
     const snapshot = await db.collection("products").get();
@@ -27,14 +30,12 @@ export default async function Home() {
         <div className="absolute inset-0 bg-gradient-to-b from-custom-parchment/60 to-custom-parchment/10"></div>
         
         <div className="relative z-10 max-w-4xl">
-          <h2 className="font-serif text-4xl md:text-6xl text-custom-forest font-bold mb-4 drop-shadow-sm">
-            BULGARIAN MASTER<br/>WOOD CARVINGS.
-          </h2>
+          <h2 className="font-serif text-4xl md:text-6xl text-custom-forest font-bold mb-4 drop-shadow-sm" dangerouslySetInnerHTML={{ __html: dict.home.hero_title }} />
           <p className="text-xl md:text-2xl text-custom-charcoal/80 font-serif italic mb-8">
-            Traditional Craft from Kazanlak.
+            {dict.home.hero_subtitle}
           </p>
-          <Link href="/products/1" className="inline-block px-8 py-3 bg-custom-gold hover:bg-custom-gold/80 text-white font-bold text-sm tracking-widest uppercase transition-colors rounded-sm shadow-md">
-            Explore Our Collection
+          <Link href={`/${params.lang}/catalogue`} className="inline-block px-8 py-3 bg-custom-gold hover:bg-custom-gold/80 text-white font-bold text-sm tracking-widest uppercase transition-colors rounded-sm shadow-md">
+            {dict.home.shop_now}
           </Link>
         </div>
       </section>
@@ -57,7 +58,7 @@ export default async function Home() {
                   <h4 className="font-bold text-custom-charcoal text-sm mb-2">{product.name}</h4>
                   <p className="text-xs text-custom-muted mb-4 flex-grow line-clamp-3">{product.description}</p>
                   <p className="text-custom-gold font-bold mb-4">{product.price} BGN</p>
-                  <Link href={`/products/${product.id}`} className="block w-full py-2 bg-custom-forest hover:bg-custom-forest/90 text-white text-xs font-bold tracking-wider uppercase transition-colors rounded">
+                  <Link href={`/${params.lang}/products/${product.id}`} className="block w-full py-2 bg-custom-forest hover:bg-custom-forest/90 text-white text-xs font-bold tracking-wider uppercase transition-colors rounded">
                     View Details
                   </Link>
                 </div>

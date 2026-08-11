@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { db } from "@/lib/firebase/admin";
+import { getDictionary } from "@/dictionaries/getDictionary";
 
-export default async function CataloguePage() {
+export default async function CataloguePage({ params }: { params: { lang: string } }) {
+  const dict = await getDictionary(params.lang as any);
+  
   let products: any[] = [];
   try {
     const snapshot = await db.collection("products").get();
@@ -23,9 +26,9 @@ export default async function CataloguePage() {
     <div className="flex flex-col items-center w-full">
       <section className="w-full max-w-7xl mx-auto px-4 py-12 md:py-20 relative z-20">
         <div className="text-center mb-16">
-          <h1 className="font-serif text-4xl md:text-5xl text-custom-forest font-bold mb-4">Complete Catalogue</h1>
+          <h1 className="font-serif text-4xl md:text-5xl text-custom-forest font-bold mb-4">{dict.catalogue.title}</h1>
           <p className="text-custom-charcoal/80 max-w-2xl mx-auto font-serif italic">
-            Browse our full collection of hand-carved masterpieces. Each piece tells a story of Bulgarian heritage.
+            {dict.catalogue.subtitle}
           </p>
         </div>
 
@@ -38,7 +41,7 @@ export default async function CataloguePage() {
                  
                  {product.isMadeToOrder && (
                    <div className="absolute top-4 left-4 bg-white/90 backdrop-blur text-amber-700 text-[10px] font-bold px-2 py-1 rounded shadow-sm border border-amber-100 uppercase tracking-wider">
-                     Made to Order
+                     {dict.catalogue.made_to_order}
                    </div>
                  )}
               </div>
@@ -48,8 +51,8 @@ export default async function CataloguePage() {
                 
                 <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-50">
                   <p className="text-custom-gold font-bold text-lg">{product.price.toFixed(2)} BGN</p>
-                  <Link href={`/products/${product.id}`} className="px-4 py-2 bg-custom-forest/10 hover:bg-custom-forest hover:text-white text-custom-forest text-xs font-bold tracking-wider uppercase transition-colors rounded">
-                    View
+                  <Link href={`/${params.lang}/products/${product.id}`} className="px-4 py-2 bg-custom-forest/10 hover:bg-custom-forest hover:text-white text-custom-forest text-xs font-bold tracking-wider uppercase transition-colors rounded">
+                    {dict.catalogue.view}
                   </Link>
                 </div>
               </div>

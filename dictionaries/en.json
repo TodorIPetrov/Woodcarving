@@ -1,0 +1,44 @@
+{
+  "nav": {
+    "home": "Home",
+    "catalogue": "Catalogue",
+    "about": "Our Story",
+    "contact": "Contact",
+    "admin": "Admin"
+  },
+  "home": {
+    "hero_title": "Artisan Woodcarving",
+    "hero_subtitle": "Handcrafted masterpieces from the heart of Kazanlak",
+    "shop_now": "Shop Collection",
+    "custom_orders": "Custom Orders"
+  },
+  "catalogue": {
+    "title": "Complete Catalogue",
+    "subtitle": "Browse our full collection of hand-carved masterpieces. Each piece tells a story of Bulgarian heritage.",
+    "made_to_order": "Made to Order",
+    "view": "View"
+  },
+  "cart": {
+    "title": "Your Cart",
+    "empty": "Your cart is empty.",
+    "subtotal": "Subtotal",
+    "taxes": "Estimated Taxes",
+    "shipping": "Shipping",
+    "total": "Total",
+    "checkout": "Checkout",
+    "processing": "Processing...",
+    "success_title": "Order Placed!",
+    "success_message": "Thank you for your order. We will contact you soon."
+  },
+  "product": {
+    "add_to_cart": "Add to Cart",
+    "personalization": "Personalization",
+    "wood_finish": "Wood Finish",
+    "size": "Size",
+    "engraving": "Custom Engraving",
+    "engraving_placeholder": "Enter text for engraving (+$10.00)"
+  },
+  "footer": {
+    "rights": "All rights reserved."
+  }
+}

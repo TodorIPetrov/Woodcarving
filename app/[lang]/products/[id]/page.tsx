@@ -6,7 +6,7 @@ import ImageZoom from "@/components/ImageZoom";
 import { useCart } from "@/components/CartContext";
 import Head from "next/head";
 
-export default function ProductPage({ params }: { params: { id: string } }) {
+export default function ProductPage({ params }: { params: { lang: string, id: string } }) {
   const product = {
     id: params.id,
     name: "Orthodox Icon Relief - St. George",

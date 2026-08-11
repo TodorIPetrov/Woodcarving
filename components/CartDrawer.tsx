@@ -3,9 +3,18 @@
 import { useCart } from "./CartContext";
 import { useState } from "react";
 
-export default function CartDrawer() {
+export default function CartDrawer({ dict, lang }: { dict?: any, lang?: string }) {
   const { isCartOpen, setIsCartOpen, items, removeItem, totalAmount } = useCart();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+
+  // Fallback to English if dict is undefined (during initial load or errors)
+  const t = dict || {
+    title: "Your Cart",
+    empty: "Your cart is empty.",
+    total: "Total",
+    checkout: "Checkout",
+    processing: "Processing..."
+  };
 
   if (!isCartOpen) return null;
 
@@ -50,7 +59,7 @@ export default function CartDrawer() {
       {/* Drawer */}
       <div className="relative w-full max-w-md bg-custom-parchment h-full shadow-2xl flex flex-col animate-slide-in">
         <div className="p-6 border-b border-gray-200 flex justify-between items-center bg-white">
-          <h2 className="font-serif text-2xl text-custom-forest">Your Cart</h2>
+          <h2 className="font-serif text-2xl text-custom-forest">{t.title}</h2>
           <button onClick={() => setIsCartOpen(false)} className="text-gray-400 hover:text-black">
             ✕
           </button>
@@ -58,7 +67,7 @@ export default function CartDrawer() {
 
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {items.length === 0 ? (
-            <p className="text-center text-custom-muted mt-10">Your cart is empty.</p>
+            <p className="text-center text-custom-muted mt-10">{t.empty}</p>
           ) : (
             items.map((item) => (
               <div key={item.id} className="flex gap-4 bg-white p-4 rounded border border-gray-100 shadow-sm">
@@ -90,7 +99,7 @@ export default function CartDrawer() {
         {items.length > 0 && (
           <div className="p-6 bg-white border-t border-gray-200">
             <div className="flex justify-between mb-4 font-bold text-lg">
-              <span>Total:</span>
+              <span>{t.total}:</span>
               <span className="text-custom-gold">{totalAmount.toFixed(2)} BGN</span>
             </div>
             <button 
@@ -98,7 +107,7 @@ export default function CartDrawer() {
               disabled={isCheckingOut}
               className="w-full py-4 bg-custom-forest hover:bg-custom-forest/90 text-white font-bold uppercase tracking-widest rounded disabled:opacity-50"
             >
-              {isCheckingOut ? 'Processing...' : 'Checkout Now'}
+              {isCheckingOut ? t.processing : t.checkout}
             </button>
           </div>
         )}
