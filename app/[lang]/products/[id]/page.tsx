@@ -5,7 +5,7 @@ import ProductClient from "./ProductClient";
 export default async function ProductPage({ params }: { params: { lang: string, id: string } }) {
   const dict = await getDictionary(params.lang as any);
   
-  let product = null;
+  let product: any = null;
   try {
     const doc = await db.collection("products").doc(params.id).get();
     if (doc.exists) {
