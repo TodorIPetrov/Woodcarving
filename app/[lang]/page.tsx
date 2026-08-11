@@ -16,9 +16,9 @@ export default async function Home({ params }: { params: { lang: string } }) {
     console.error("Error fetching products from Firestore:", error);
     // Fallback if DB isn't ready
     products = [
-      { id: "1", name: "Orthodox Icon Relief - St. George", price: 250, description: "Hand-carved wooden relief.", image: "/images/st-george.jpg" },
-      { id: "2", name: "Last Supper Relief", price: 550, description: "Breathtaking carving of the Last Supper.", image: "/images/last-supper.jpg" },
-      { id: "3", name: "Vintage Floral Plaque", price: 180, description: "Reclaimed Bulgaria ceiling ornament pattern.", image: "/images/floral-plaque.jpg" }
+      { id: "1", name: dict.product.fallback_name || "Orthodox Icon Relief - St. George", price: 250, description: dict.product.fallback_desc || "Hand-carved wooden relief.", image: "/images/st-george.jpg" },
+      { id: "2", name: params.lang === 'bg' ? "Релеф Тайната Вечеря" : "Last Supper Relief", price: 550, description: params.lang === 'bg' ? "Спираща дъха дърворезба на Тайната Вечеря." : "Breathtaking carving of the Last Supper.", image: "/images/last-supper.jpg" },
+      { id: "3", name: params.lang === 'bg' ? "Винтидж Флорален Плакет" : "Vintage Floral Plaque", price: 180, description: params.lang === 'bg' ? "Възстановен мотив от български таванни орнаменти." : "Reclaimed Bulgaria ceiling ornament pattern.", image: "/images/floral-plaque.jpg" }
     ];
   }
 
@@ -44,7 +44,7 @@ export default async function Home({ params }: { params: { lang: string } }) {
       <section className="w-full max-w-7xl mx-auto px-4 py-16 -mt-20 relative z-20">
         <div className="bg-custom-cream rounded-xl shadow-xl shadow-custom-forest/5 p-8 md:p-12 border border-white/50">
           <div className="text-center mb-12">
-            <h3 className="font-serif text-3xl text-custom-forest">Featured Masterpieces</h3>
+            <h3 className="font-serif text-3xl text-custom-forest">{dict.home.featured_masterpieces}</h3>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -59,7 +59,7 @@ export default async function Home({ params }: { params: { lang: string } }) {
                   <p className="text-xs text-custom-muted mb-4 flex-grow line-clamp-3">{product.description}</p>
                   <p className="text-custom-gold font-bold mb-4">{product.price} BGN</p>
                   <Link href={`/${params.lang}/products/${product.id}`} className="block w-full py-2 bg-custom-forest hover:bg-custom-forest/90 text-white text-xs font-bold tracking-wider uppercase transition-colors rounded">
-                    View Details
+                    {dict.home.view_details}
                   </Link>
                 </div>
               </div>

@@ -16,9 +16,9 @@ export default async function CataloguePage({ params }: { params: { lang: string
     console.error("Error fetching products from Firestore:", error);
     // Fallback if DB isn't ready
     products = [
-      { id: "1", name: "Orthodox Icon Relief - St. George", price: 250, description: "Hand-carved wooden relief.", image: "/images/st-george.jpg", isMadeToOrder: true },
-      { id: "2", name: "Last Supper Relief", price: 550, description: "Breathtaking carving of the Last Supper.", image: "/images/last-supper.jpg", isMadeToOrder: true },
-      { id: "3", name: "Vintage Floral Plaque", price: 180, description: "Reclaimed Bulgaria ceiling ornament pattern.", image: "/images/floral-plaque.jpg", isMadeToOrder: false }
+      { id: "1", name: dict.product.fallback_name || "Orthodox Icon Relief - St. George", price: 250, description: dict.product.fallback_desc || "Hand-carved wooden relief.", image: "/images/st-george.jpg", isMadeToOrder: true },
+      { id: "2", name: params.lang === 'bg' ? "Релеф Тайната Вечеря" : "Last Supper Relief", price: 550, description: params.lang === 'bg' ? "Спираща дъха дърворезба на Тайната Вечеря." : "Breathtaking carving of the Last Supper.", image: "/images/last-supper.jpg", isMadeToOrder: true },
+      { id: "3", name: params.lang === 'bg' ? "Винтидж Флорален Плакет" : "Vintage Floral Plaque", price: 180, description: params.lang === 'bg' ? "Възстановен мотив от български таванни орнаменти." : "Reclaimed Bulgaria ceiling ornament pattern.", image: "/images/floral-plaque.jpg", isMadeToOrder: false }
     ];
   }
 
