@@ -48,22 +48,28 @@ export default async function Home({ params }: { params: { lang: string } }) {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {products.map((product) => (
-              <div key={product.id} className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 border border-gray-100 flex flex-col h-full">
-                <div className="h-48 bg-custom-parchment p-4 flex items-center justify-center border-b border-gray-50">
-                   {/* Placeholder for actual image */}
-                   <div className="w-full h-full border border-dashed border-gray-300 rounded flex items-center justify-center text-gray-400 text-xs">Image: {product.name}</div>
+            {products.map((p) => {
+              const productName = p[`name_${params.lang}`] || p.name || '';
+              const productDesc = p[`description_${params.lang}`] || p.description || '';
+              return (
+              <div key={p.id} className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 border border-gray-100 flex flex-col h-full">
+                <div className="h-48 bg-custom-parchment p-4 flex items-center justify-center border-b border-gray-50 overflow-hidden">
+                   {p.image && p.image.startsWith('http') ? (
+                     <img src={p.image} alt={productName} className="w-full h-full object-cover" />
+                   ) : (
+                     <div className="w-full h-full border border-dashed border-gray-300 rounded flex items-center justify-center text-gray-400 text-xs">Image: {productName}</div>
+                   )}
                 </div>
                 <div className="p-6 flex flex-col flex-grow text-center">
-                  <h4 className="font-bold text-custom-charcoal text-sm mb-2">{product.name}</h4>
-                  <p className="text-xs text-custom-muted mb-4 flex-grow line-clamp-3">{product.description}</p>
-                  <p className="text-custom-gold font-bold mb-4">{product.price} BGN</p>
-                  <Link href={`/${params.lang}/products/${product.id}`} className="block w-full py-2 bg-custom-forest hover:bg-custom-forest/90 text-white text-xs font-bold tracking-wider uppercase transition-colors rounded">
+                  <h4 className="font-bold text-custom-charcoal text-sm mb-2">{productName}</h4>
+                  <p className="text-xs text-custom-muted mb-4 flex-grow line-clamp-3">{productDesc}</p>
+                  <p className="text-custom-gold font-bold mb-4">{p.price} BGN</p>
+                  <Link href={`/${params.lang}/products/${p.id}`} className="block w-full py-2 bg-custom-forest hover:bg-custom-forest/90 text-white text-xs font-bold tracking-wider uppercase transition-colors rounded">
                     {dict.home.view_details}
                   </Link>
                 </div>
               </div>
-            ))}
+            )})}
           </div>
         </div>
       </section>

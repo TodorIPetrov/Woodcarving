@@ -9,7 +9,14 @@ export default async function ProductPage({ params }: { params: { lang: string, 
   try {
     const doc = await db.collection("products").doc(params.id).get();
     if (doc.exists) {
-      product = { id: doc.id, ...doc.data() };
+      const data = doc.data() as any;
+      product = { 
+        id: doc.id, 
+        ...data,
+        name: data[`name_${params.lang}`] || data.name || '',
+        description: data[`description_${params.lang}`] || data.description || '',
+        woodType: data[`woodType_${params.lang}`] || data.woodType || ''
+      };
     }
   } catch (error) {
     console.error("Error fetching product:", error);

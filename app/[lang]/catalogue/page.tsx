@@ -33,31 +33,37 @@ export default async function CataloguePage({ params }: { params: { lang: string
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {products.map((product) => (
-            <div key={product.id} className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 border border-gray-100 flex flex-col h-full group">
+          {products.map((p) => {
+            const productName = p[`name_${params.lang}`] || p.name || '';
+            const productDesc = p[`description_${params.lang}`] || p.description || '';
+            return (
+            <div key={p.id} className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 border border-gray-100 flex flex-col h-full group">
               <div className="relative h-64 bg-custom-parchment p-4 flex items-center justify-center border-b border-gray-50 overflow-hidden">
-                 {/* Image Placeholder */}
-                 <div className="w-full h-full border border-dashed border-gray-300 rounded flex items-center justify-center text-gray-400 text-xs bg-custom-parchment group-hover:scale-105 transition-transform duration-700">Image: {product.name}</div>
+                 {p.image && p.image.startsWith('http') ? (
+                   <img src={p.image} alt={productName} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                 ) : (
+                   <div className="w-full h-full border border-dashed border-gray-300 rounded flex items-center justify-center text-gray-400 text-xs bg-custom-parchment group-hover:scale-105 transition-transform duration-700">Image: {productName}</div>
+                 )}
                  
-                 {product.isMadeToOrder && (
+                 {p.isMadeToOrder && (
                    <div className="absolute top-4 left-4 bg-white/90 backdrop-blur text-amber-700 text-[10px] font-bold px-2 py-1 rounded shadow-sm border border-amber-100 uppercase tracking-wider">
                      {dict.catalogue.made_to_order}
                    </div>
                  )}
               </div>
               <div className="p-6 flex flex-col flex-grow">
-                <h4 className="font-bold text-custom-charcoal text-base mb-2">{product.name}</h4>
-                <p className="text-sm text-custom-muted mb-6 flex-grow line-clamp-2 leading-relaxed">{product.description}</p>
+                <h4 className="font-bold text-custom-charcoal text-base mb-2">{productName}</h4>
+                <p className="text-sm text-custom-muted mb-6 flex-grow line-clamp-2 leading-relaxed">{productDesc}</p>
                 
                 <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-50">
-                  <p className="text-custom-gold font-bold text-lg">{product.price.toFixed(2)} BGN</p>
-                  <Link href={`/${params.lang}/products/${product.id}`} className="px-4 py-2 bg-custom-forest/10 hover:bg-custom-forest hover:text-white text-custom-forest text-xs font-bold tracking-wider uppercase transition-colors rounded">
+                  <p className="text-custom-gold font-bold text-lg">{p.price.toFixed(2)} BGN</p>
+                  <Link href={`/${params.lang}/products/${p.id}`} className="px-4 py-2 bg-custom-forest/10 hover:bg-custom-forest hover:text-white text-custom-forest text-xs font-bold tracking-wider uppercase transition-colors rounded">
                     {dict.catalogue.view}
                   </Link>
                 </div>
               </div>
             </div>
-          ))}
+          )})}
         </div>
       </section>
     </div>
