@@ -112,20 +112,54 @@ export async function deleteProduct(productId: string, imageUrl: string) {
   }
 }
 
-export async function updateProduct(productId: string, data: any) {
+export async function updateProduct(formData: FormData) {
   try {
-    const docRef = db.collection("products").doc(productId);
-    await docRef.update({
-      ...data,
-      isMadeToOrder: data.stockStatus === "Изработва се по поръчка"
-    });
+    const id = formData.get("id") as string;
+    const nameBG = formData.get("name_bg") as string;
+    const descBG = formData.get("description_bg") as string;
+    const nameEN = formData.get("name_en") as string;
+    const descEN = formData.get("description_en") as string;
+    const priceStr = formData.get("price") as string;
+    const category = formData.get("category") as string;
+    const stockStatus = formData.get("stockStatus") as string;
+    const material = formData.get("material") as string;
+    const file = formData.get("image") as File | null;
+    const existingImageUrl = formData.get("existingImageUrl") as string;
+
+    const updateData: any = {
+      name: nameBG,
+      name_bg: nameBG,
+      description_bg: descBG,
+      name_en: nameEN,
+      description_en: descEN,
+      price: parseFloat(priceStr),
+      category,
+      stockStatus,
+      material,
+      isMadeToOrder: stockStatus === "Изработва се по поръчка"
+    };
+
+    // Upload new image if provided
+    if (file && file.size > 0) {
+      const bucket = admin.storage().bucket(process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET);
+      const fileName = `products/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
+      const fileBuffer = Buffer.from(await file.arrayBuffer());
+      
+      const fileRef = bucket.file(fileName);
+      await fileRef.save(fileBuffer, { metadata: { contentType: file.type } });
+      await fileRef.makePublic();
+      
+      updateData.image = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
+    }
+
+    await db.collection("products").doc(id).update(updateData);
     
     revalidatePath("/[lang]/catalogue", "page");
     revalidatePath("/[lang]/admin", "page");
-    return { success: true };
+    return { success: true, message: "Продуктът е обновен успешно!" };
   } catch (error: any) {
     console.error("Failed to update product:", error);
-    return { success: false, error: error.message };
+    return { success: false, error: "Грешка при редакция: " + error.message };
   }
 }
 
