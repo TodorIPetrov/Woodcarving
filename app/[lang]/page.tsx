@@ -48,16 +48,18 @@ export default async function Home({ params }: { params: { lang: string } }) {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {products.map((p) => {
+            {products.slice(0, 4).map((p) => {
               const productName = p[`name_${params.lang}`] || p.name || '';
               const productDesc = p[`description_${params.lang}`] || p.description || '';
+              const imageSrc = (p.images && p.images.length > 0) ? p.images[0] : p.image;
+              
               return (
               <div key={p.id} className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 border border-gray-100 flex flex-col h-full">
                 <div className="h-48 bg-custom-parchment p-4 flex items-center justify-center border-b border-gray-50 overflow-hidden">
-                   {p.image && p.image.startsWith('http') ? (
-                     <img src={p.image} alt={productName} className="w-full h-full object-cover" />
+                   {imageSrc ? (
+                     <img src={imageSrc} alt={productName} className="w-full h-full object-cover" />
                    ) : (
-                     <div className="w-full h-full border border-dashed border-gray-300 rounded flex items-center justify-center text-gray-400 text-xs">Image: {productName}</div>
+                     <div className="w-full h-full border border-dashed border-gray-300 rounded flex items-center justify-center text-gray-400 text-xs text-center p-2">Липсва снимка:<br/>{productName}</div>
                    )}
                 </div>
                 <div className="p-6 flex flex-col flex-grow text-center">

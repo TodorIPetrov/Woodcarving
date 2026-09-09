@@ -105,8 +105,8 @@ export default function AdminPanel() {
 }
 
 function AddProductForm({ initialData, onCancelEdit }: { initialData?: any, onCancelEdit?: () => void }) {
-  const [imagePreview, setImagePreview] = useState<string | null>(initialData?.image || null);
-  const [file, setFile] = useState<File | null>(null);
+  const [imagesPreview, setImagesPreview] = useState<string[]>(initialData?.images || (initialData?.image ? [initialData.image] : []));
+  const [files, setFiles] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
   const formRef = useRef<HTMLFormElement>(null);
@@ -114,17 +114,29 @@ function AddProductForm({ initialData, onCancelEdit }: { initialData?: any, onCa
   const isEdit = !!initialData;
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      setFile(files[0]);
-      setImagePreview(URL.createObjectURL(files[0]));
+    const selectedFiles = Array.from(e.target.files || []);
+    if (selectedFiles.length > 0) {
+      setFiles(prev => [...prev, ...selectedFiles]);
+      const newPreviews = selectedFiles.map(f => URL.createObjectURL(f));
+      setImagesPreview(prev => [...prev, ...newPreviews]);
+    }
+  };
+
+  const removeImage = (index: number) => {
+    setImagesPreview(prev => prev.filter((_, i) => i !== index));
+    // It's tricky to remove from File[] array if it's a mix of new and old files.
+    // If index < old images count, we are removing an old image.
+    // If index >= old images count, we remove from `files`.
+    const oldImagesCount = imagesPreview.length - files.length;
+    if (index >= oldImagesCount) {
+      setFiles(prev => prev.filter((_, i) => i !== (index - oldImagesCount)));
     }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!isEdit && !file) {
-      setMessage({ type: 'error', text: 'Моля, качете снимка!' });
+    if (!isEdit && files.length === 0) {
+      setMessage({ type: 'error', text: 'Моля, качете поне една снимка!' });
       return;
     }
 
@@ -132,14 +144,15 @@ function AddProductForm({ initialData, onCancelEdit }: { initialData?: any, onCa
     setMessage({ type: '', text: '' });
 
     const formData = new FormData(e.currentTarget);
-    if (file) {
-      formData.append('image', file);
-    }
+    files.forEach(f => formData.append('images', f));
+    
+    // Pass existing images that were NOT deleted
+    const oldImagesLeft = imagesPreview.filter(p => p.startsWith('http'));
+    formData.append('existingImages', JSON.stringify(oldImagesLeft));
     
     let result;
     if (isEdit) {
       formData.append('id', initialData.id);
-      formData.append('existingImageUrl', initialData.image);
       result = await updateProduct(formData);
     } else {
       result = await addProduct(formData);
@@ -149,8 +162,8 @@ function AddProductForm({ initialData, onCancelEdit }: { initialData?: any, onCa
       setMessage({ type: 'success', text: result.message! });
       if (!isEdit) {
         formRef.current?.reset();
-        setFile(null);
-        setImagePreview(null);
+        setFiles([]);
+        setImagesPreview([]);
       }
     } else {
       setMessage({ type: 'error', text: result.error! });
@@ -218,26 +231,22 @@ function AddProductForm({ initialData, onCancelEdit }: { initialData?: any, onCa
             </div>
           </div>
           <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-            <h3 className="text-lg font-semibold mb-4 text-gray-800">Снимка {isEdit ? '' : '*'}</h3>
+            <h3 className="text-lg font-semibold mb-4 text-gray-800">Снимки {isEdit ? '' : '*'}</h3>
             <div className="grid grid-cols-2 gap-4 mb-4">
-              {imagePreview ? (
-                <div className="relative aspect-square rounded-lg border border-gray-200 overflow-hidden group bg-gray-50">
-                  <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+              {imagesPreview.map((src, index) => (
+                <div key={index} className="relative aspect-square rounded-lg border border-gray-200 overflow-hidden group bg-gray-50">
+                  <img src={src} alt="Preview" className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <button type="button" onClick={() => {setImagePreview(null); setFile(null);}} className="text-white text-xs bg-red-500 px-3 py-1 rounded">Изтрий / Смени</button>
+                    <button type="button" onClick={() => removeImage(index)} className="text-white text-xs bg-red-500 px-3 py-1 rounded">Изтрий</button>
                   </div>
                 </div>
-              ) : (
-                <label className="aspect-square rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-500 hover:border-custom-gold hover:text-custom-gold transition-colors cursor-pointer bg-gray-50 hover:bg-custom-cream">
-                  <Upload size={24} className="mb-2" />
-                  <span className="text-sm font-medium text-center px-2">Качи нова снимка<br/>(до 5MB)</span>
-                  <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
-                </label>
-              )}
+              ))}
+              <label className="aspect-square rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-500 hover:border-custom-gold hover:text-custom-gold transition-colors cursor-pointer bg-gray-50 hover:bg-custom-cream">
+                <Upload size={24} className="mb-2" />
+                <span className="text-sm font-medium text-center px-2">Качи още снимки<br/>(до 5MB)</span>
+                <input type="file" multiple accept="image/*" className="hidden" onChange={handleImageUpload} />
+              </label>
             </div>
-            {isEdit && !imagePreview && (
-              <p className="text-xs text-gray-500">Ако не качите нова снимка, ще се запази старата.</p>
-            )}
           </div>
         </div>
         <div className="space-y-6">

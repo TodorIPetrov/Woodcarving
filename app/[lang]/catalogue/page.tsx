@@ -36,13 +36,15 @@ export default async function CataloguePage({ params }: { params: { lang: string
           {products.map((p) => {
             const productName = p[`name_${params.lang}`] || p.name || '';
             const productDesc = p[`description_${params.lang}`] || p.description || '';
+            const imageSrc = (p.images && p.images.length > 0) ? p.images[0] : p.image;
+            
             return (
             <div key={p.id} className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 border border-gray-100 flex flex-col h-full group">
               <div className="relative h-64 bg-custom-parchment p-4 flex items-center justify-center border-b border-gray-50 overflow-hidden">
-                 {p.image && p.image.startsWith('http') ? (
-                   <img src={p.image} alt={productName} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                 {imageSrc ? (
+                   <img src={imageSrc} alt={productName} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                  ) : (
-                   <div className="w-full h-full border border-dashed border-gray-300 rounded flex items-center justify-center text-gray-400 text-xs bg-custom-parchment group-hover:scale-105 transition-transform duration-700">Image: {productName}</div>
+                   <div className="w-full h-full border border-dashed border-gray-300 rounded flex items-center justify-center text-gray-400 text-xs bg-custom-parchment group-hover:scale-105 transition-transform duration-700 text-center p-2">Липсва снимка:<br/>{productName}</div>
                  )}
                  
                  {p.isMadeToOrder && (

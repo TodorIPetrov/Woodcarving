@@ -14,34 +14,33 @@ export async function addProduct(formData: FormData) {
     const category = formData.get("category") as string;
     const stockStatus = formData.get("stockStatus") as string;
     const material = formData.get("material") as string;
-    const file = formData.get("image") as File;
+    const files = formData.getAll("images") as File[];
 
-    if (!nameBG || !priceStr || !file || file.size === 0) {
-      return { success: false, error: "Моля, попълнете задължителните полета и добавете снимка." };
+    if (!nameBG || !priceStr || files.length === 0) {
+      return { success: false, error: "Моля, попълнете задължителните полета и добавете поне една снимка." };
     }
 
     const price = parseFloat(priceStr);
     
-    // Upload image to Firebase Storage
+    // Upload images to Firebase Storage
     const bucket = admin.storage().bucket(process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET);
-    const fileName = `products/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
-    const fileBuffer = Buffer.from(await file.arrayBuffer());
-    
-    const fileRef = bucket.file(fileName);
-    await fileRef.save(fileBuffer, {
-      metadata: {
-        contentType: file.type,
-      },
-    });
-    
-    await fileRef.makePublic();
-    const publicUrl = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
+    const imageUrls = [];
+
+    for (const file of files) {
+      if (file.size === 0) continue;
+      const fileName = `products/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
+      const fileBuffer = Buffer.from(await file.arrayBuffer());
+      const fileRef = bucket.file(fileName);
+      await fileRef.save(fileBuffer, { metadata: { contentType: file.type } });
+      await fileRef.makePublic();
+      imageUrls.push(`https://storage.googleapis.com/${bucket.name}/${fileName}`);
+    }
 
     // Add to Firestore
     const newDoc = db.collection("products").doc();
     const productData = {
       id: newDoc.id,
-      name: nameBG, // fallback legacy
+      name: nameBG,
       name_bg: nameBG,
       description_bg: descBG,
       name_en: nameEN || nameBG,
@@ -50,14 +49,14 @@ export async function addProduct(formData: FormData) {
       category: category,
       stockStatus: stockStatus,
       material: material,
-      image: publicUrl,
+      images: imageUrls,
+      image: imageUrls[0] || "", // fallback legacy
       isMadeToOrder: stockStatus === "Изработва се по поръчка",
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
     };
 
     await newDoc.set(productData);
 
-    // Revalidate catalogue pages
     revalidatePath("/[lang]/catalogue", "page");
     revalidatePath("/[lang]/admin", "page");
 
@@ -83,26 +82,33 @@ export async function getProducts() {
   }
 }
 
-export async function deleteProduct(productId: string, imageUrl: string) {
+export async function deleteProduct(productId: string, imageUrl?: string) {
   try {
-    // 1. Delete from Firestore
-    await db.collection("products").doc(productId).delete();
+    const docRef = db.collection("products").doc(productId);
+    const doc = await docRef.get();
     
-    // 2. Try to delete from Storage if it's a Firebase URL
-    if (imageUrl && imageUrl.includes("storage.googleapis.com")) {
-      const bucket = admin.storage().bucket(process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET);
-      // Extract file path from URL
-      const urlParts = imageUrl.split(`${bucket.name}/`);
-      if (urlParts.length > 1) {
-        const filePath = urlParts[1].split('?')[0]; // Handle potential query params
+    if (doc.exists) {
+      const data = doc.data();
+      const imagesToDelete = data?.images || (imageUrl ? [imageUrl] : []);
+      
+      for (const img of imagesToDelete) {
         try {
-          await bucket.file(decodeURIComponent(filePath)).delete();
+          if (img && img.includes("storage.googleapis.com")) {
+            const bucket = admin.storage().bucket(process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET);
+            const pathParts = img.split(`${bucket.name}/`);
+            if (pathParts.length > 1) {
+              const fileName = pathParts[1];
+              await bucket.file(fileName).delete();
+            }
+          }
         } catch (e) {
-          console.warn("Could not delete file from storage, perhaps already deleted:", e);
+          console.error("Failed to delete image from storage:", img, e);
         }
       }
     }
 
+    await docRef.delete();
+    
     revalidatePath("/[lang]/catalogue", "page");
     revalidatePath("/[lang]/admin", "page");
     return { success: true };
@@ -123,8 +129,9 @@ export async function updateProduct(formData: FormData) {
     const category = formData.get("category") as string;
     const stockStatus = formData.get("stockStatus") as string;
     const material = formData.get("material") as string;
-    const file = formData.get("image") as File | null;
-    const existingImageUrl = formData.get("existingImageUrl") as string;
+    const files = formData.getAll("images") as File[];
+    const existingImagesStr = formData.get("existingImages") as string;
+    const existingImages = existingImagesStr ? JSON.parse(existingImagesStr) : [];
 
     const updateData: any = {
       name: nameBG,
@@ -139,18 +146,23 @@ export async function updateProduct(formData: FormData) {
       isMadeToOrder: stockStatus === "Изработва се по поръчка"
     };
 
-    // Upload new image if provided
-    if (file && file.size > 0) {
-      const bucket = admin.storage().bucket(process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET);
+    const bucket = admin.storage().bucket(process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET);
+    const newImageUrls = [];
+
+    // Upload new images if provided
+    for (const file of files) {
+      if (file.size === 0) continue;
       const fileName = `products/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
       const fileBuffer = Buffer.from(await file.arrayBuffer());
-      
       const fileRef = bucket.file(fileName);
       await fileRef.save(fileBuffer, { metadata: { contentType: file.type } });
       await fileRef.makePublic();
-      
-      updateData.image = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
+      newImageUrls.push(`https://storage.googleapis.com/${bucket.name}/${fileName}`);
     }
+
+    const finalImages = [...existingImages, ...newImageUrls];
+    updateData.images = finalImages;
+    updateData.image = finalImages[0] || ""; // fallback legacy
 
     await db.collection("products").doc(id).update(updateData);
     
