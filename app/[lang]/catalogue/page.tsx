@@ -7,7 +7,7 @@ export default async function CataloguePage({ params }: { params: { lang: string
   
   let products: any[] = [];
   try {
-    const snapshot = await db.collection("products").get();
+    const snapshot = await db.collection("products").orderBy("createdAt", "desc").get();
     products = snapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),

@@ -15,7 +15,8 @@ export default async function ProductPage({ params }: { params: { lang: string, 
         ...data,
         name: data[`name_${params.lang}`] || data.name || '',
         description: data[`description_${params.lang}`] || data.description || '',
-        woodType: data[`woodType_${params.lang}`] || data.woodType || ''
+        woodType: data[`woodType_${params.lang}`] || data.woodType || '',
+        createdAt: data.createdAt?.toDate()?.toISOString() || null
       };
     }
   } catch (error) {
