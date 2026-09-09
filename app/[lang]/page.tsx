@@ -54,23 +54,23 @@ export default async function Home({ params }: { params: { lang: string } }) {
               const imageSrc = (p.images && p.images.length > 0) ? p.images[0] : p.image;
               
               return (
-              <div key={p.id} className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 border border-gray-100 flex flex-col h-full">
+              <Link href={`/${params.lang}/products/${p.id}`} key={p.id} className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 border border-gray-100 flex flex-col h-full cursor-pointer group">
                 <div className="h-48 bg-custom-parchment p-4 flex items-center justify-center border-b border-gray-50 overflow-hidden">
                    {imageSrc ? (
-                     <img src={imageSrc} alt={productName} className="w-full h-full object-cover" />
+                     <img src={imageSrc} alt={productName} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                    ) : (
                      <div className="w-full h-full border border-dashed border-gray-300 rounded flex items-center justify-center text-gray-400 text-xs text-center p-2">Липсва снимка:<br/>{productName}</div>
                    )}
                 </div>
                 <div className="p-6 flex flex-col flex-grow text-center">
-                  <h4 className="font-bold text-custom-charcoal text-sm mb-2">{productName}</h4>
+                  <h4 className="font-bold text-custom-charcoal text-sm mb-2 group-hover:text-custom-gold transition-colors">{productName}</h4>
                   <p className="text-xs text-custom-muted mb-4 flex-grow line-clamp-3">{productDesc}</p>
                   <p className="text-custom-gold font-bold mb-4">{p.price} BGN</p>
-                  <Link href={`/${params.lang}/products/${p.id}`} className="block w-full py-2 bg-custom-forest hover:bg-custom-forest/90 text-white text-xs font-bold tracking-wider uppercase transition-colors rounded">
+                  <div className="block w-full py-2 bg-custom-forest hover:bg-custom-forest/90 text-white text-xs font-bold tracking-wider uppercase transition-colors rounded">
                     {dict.home.view_details}
-                  </Link>
+                  </div>
                 </div>
-              </div>
+              </Link>
             )})}
           </div>
         </div>

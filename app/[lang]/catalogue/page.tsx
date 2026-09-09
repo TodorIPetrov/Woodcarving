@@ -39,7 +39,7 @@ export default async function CataloguePage({ params }: { params: { lang: string
             const imageSrc = (p.images && p.images.length > 0) ? p.images[0] : p.image;
             
             return (
-            <div key={p.id} className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 border border-gray-100 flex flex-col h-full group">
+            <Link href={`/${params.lang}/products/${p.id}`} key={p.id} className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 border border-gray-100 flex flex-col h-full group cursor-pointer">
               <div className="relative h-64 bg-custom-parchment p-4 flex items-center justify-center border-b border-gray-50 overflow-hidden">
                  {imageSrc ? (
                    <img src={imageSrc} alt={productName} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
@@ -53,18 +53,18 @@ export default async function CataloguePage({ params }: { params: { lang: string
                    </div>
                  )}
               </div>
-              <div className="p-6 flex flex-col flex-grow">
-                <h4 className="font-bold text-custom-charcoal text-base mb-2">{productName}</h4>
-                <p className="text-sm text-custom-muted mb-6 flex-grow line-clamp-2 leading-relaxed">{productDesc}</p>
-                
-                <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-50">
-                  <p className="text-custom-gold font-bold text-lg">{p.price.toFixed(2)} BGN</p>
-                  <Link href={`/${params.lang}/products/${p.id}`} className="px-4 py-2 bg-custom-forest/10 hover:bg-custom-forest hover:text-white text-custom-forest text-xs font-bold tracking-wider uppercase transition-colors rounded">
-                    {dict.catalogue.view}
-                  </Link>
+              
+              <div className="p-6 flex flex-col flex-grow text-center">
+                <h4 className="font-bold text-custom-charcoal text-lg mb-2 group-hover:text-custom-gold transition-colors">{productName}</h4>
+                <p className="text-sm text-custom-muted mb-6 flex-grow line-clamp-3">{productDesc}</p>
+                <div className="mt-auto">
+                  <p className="text-custom-gold font-bold text-xl mb-4">{p.price.toFixed(2)} BGN</p>
+                  <div className="block w-full py-3 bg-custom-forest hover:bg-custom-forest/90 text-white font-bold tracking-widest uppercase transition-colors rounded shadow-md">
+                    {dict.catalogue.view || "Виж"}
+                  </div>
                 </div>
               </div>
-            </div>
+            </Link>
           )})}
         </div>
       </section>
