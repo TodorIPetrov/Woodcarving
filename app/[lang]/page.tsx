@@ -24,25 +24,20 @@ export default async function Home({ params }: { params: { lang: string } }) {
 
   return (
     <div className="flex flex-col items-center w-full">
-      {/* Hero Section */}
-      <section className="relative w-full h-[60vh] md:h-[70vh] flex flex-col items-center justify-center text-center px-4">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1599839619722-39751411ea63?q=80&w=2000')] bg-cover bg-center opacity-30 mix-blend-multiply"></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-custom-parchment/60 to-custom-parchment/10"></div>
-        
-        <div className="relative z-10 max-w-4xl">
-          <h2 className="font-serif text-4xl md:text-6xl text-custom-forest font-bold mb-4 drop-shadow-sm" dangerouslySetInnerHTML={{ __html: dict.home.hero_title }} />
-          <p className="text-xl md:text-2xl text-custom-charcoal/80 font-serif italic mb-8">
-            {dict.home.hero_subtitle}
-          </p>
-          <Link href={`/${params.lang}/catalogue`} className="inline-block px-8 py-3 bg-custom-gold hover:bg-custom-gold/80 text-white font-bold text-sm tracking-widest uppercase transition-colors rounded-sm shadow-md">
-            {dict.home.shop_now}
-          </Link>
-        </div>
+      {/* Minimalist Greeting */}
+      <section className="w-full max-w-4xl mx-auto px-4 pt-16 pb-12 text-center">
+        <h2 className="font-serif text-3xl md:text-5xl text-custom-forest font-bold mb-4" dangerouslySetInnerHTML={{ __html: dict.home.hero_title }} />
+        <p className="text-lg text-custom-charcoal/70 font-serif italic mb-8 max-w-2xl mx-auto">
+          {dict.home.hero_subtitle}
+        </p>
+        <Link href={`/${params.lang}/catalogue`} className="inline-block px-8 py-3 bg-custom-gold hover:bg-custom-gold/80 text-white font-bold text-sm tracking-widest uppercase transition-colors rounded shadow-sm">
+          {dict.home.shop_now}
+        </Link>
       </section>
 
       {/* Featured Masterpieces Section */}
-      <section className="w-full max-w-7xl mx-auto px-4 py-16 -mt-20 relative z-20">
-        <div className="bg-custom-cream rounded-xl shadow-xl shadow-custom-forest/5 p-8 md:p-12 border border-white/50">
+      <section className="w-full max-w-7xl mx-auto px-4 py-8 relative z-20">
+        <div className="bg-transparent md:bg-white md:shadow-sm p-4 md:p-12 md:rounded-xl">
           <div className="text-center mb-12">
             <h3 className="font-serif text-3xl text-custom-forest">{dict.home.featured_masterpieces}</h3>
           </div>
