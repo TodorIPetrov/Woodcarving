@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useRef } from 'react';
-import { Upload, Plus, Package, CheckCircle, List, Settings, Lock } from 'lucide-react';
-import { addProduct } from '@/lib/actions/product';
+import React, { useState, useRef, useEffect } from 'react';
+import { Upload, Plus, Package, CheckCircle, List, Lock, Trash2, Edit } from 'lucide-react';
+import { addProduct, getProducts, deleteProduct, updateProduct } from '@/lib/actions/product';
 
 export default function AdminPanel() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -12,7 +12,6 @@ export default function AdminPanel() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Използваме проста хардкодната парола за момента
     if (password === 'Todor2026') {
       setIsAuthenticated(true);
       setError('');
@@ -55,11 +54,11 @@ export default function AdminPanel() {
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-gray-200 flex flex-col">
+      <aside className="w-64 bg-white border-r border-gray-200 flex flex-col h-screen sticky top-0">
         <div className="p-6 border-b border-gray-200">
           <h1 className="text-xl font-serif font-bold text-gray-800">Kazanlak Admin</h1>
         </div>
-        <nav className="flex-1 p-4 space-y-2">
+        <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
           <button 
             onClick={() => setActiveTab('add')}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${activeTab === 'add' ? 'bg-custom-cream text-custom-forest' : 'text-gray-600 hover:bg-gray-100'}`}
@@ -84,13 +83,8 @@ export default function AdminPanel() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-8 overflow-y-auto">
-        {activeTab === 'add' ? <AddProductForm /> : (
-          <div className="flex flex-col items-center justify-center h-full text-gray-400">
-            <Package size={48} className="mb-4 opacity-50" />
-            <h2 className="text-xl">Списъкът с продукти е в разработка</h2>
-          </div>
-        )}
+      <main className="flex-1 p-8">
+        {activeTab === 'add' ? <AddProductForm /> : <ProductList />}
       </main>
     </div>
   );
@@ -162,39 +156,31 @@ function AddProductForm() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
-          {/* Main Info */}
           <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
             <h3 className="text-lg font-semibold mb-4 text-gray-800">Основна Информация</h3>
-            
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Име на продукта (BG) *</label>
-                <input required name="name_bg" type="text" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-gold focus:border-custom-gold outline-none" placeholder="напр. Релефна Икона - Св. Георги" />
+                <input required name="name_bg" type="text" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-gold outline-none" />
               </div>
-              
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Описание (BG)</label>
-                <textarea name="description_bg" rows={4} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-gold outline-none" placeholder="Опишете детайлите..."></textarea>
+                <textarea name="description_bg" rows={4} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-gold outline-none"></textarea>
               </div>
             </div>
-            
             <div className="mt-6 pt-6 border-t border-gray-100 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Име на продукта (EN)</label>
-                <input name="name_en" type="text" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-gold outline-none" placeholder="e.g. Orthodox Icon Relief" />
+                <input name="name_en" type="text" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-gold outline-none" />
               </div>
-              
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Описание (EN)</label>
-                <textarea name="description_en" rows={3} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-gold outline-none" placeholder="Describe the details..."></textarea>
+                <textarea name="description_en" rows={3} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-gold outline-none"></textarea>
               </div>
             </div>
           </div>
-
-          {/* Media */}
           <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
             <h3 className="text-lg font-semibold mb-4 text-gray-800">Снимка *</h3>
-            
             <div className="grid grid-cols-2 gap-4 mb-4">
               {imagePreview ? (
                 <div className="relative aspect-square rounded-lg border border-gray-200 overflow-hidden group bg-gray-50">
@@ -213,23 +199,17 @@ function AddProductForm() {
             </div>
           </div>
         </div>
-
-        {/* Sidebar Info */}
         <div className="space-y-6">
           <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
             <h3 className="text-lg font-semibold mb-4 text-gray-800">Детайли</h3>
-            
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Цена (BGN) *</label>
                 <div className="relative">
                   <input required name="price" type="number" step="0.01" className="w-full pl-4 pr-12 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-gold outline-none" placeholder="0.00" />
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-gray-500">
-                    лв.
-                  </div>
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-gray-500">лв.</div>
                 </div>
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Категория</label>
                 <select name="category" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-gold outline-none bg-white">
@@ -239,7 +219,6 @@ function AddProductForm() {
                   <option>По поръчка</option>
                 </select>
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Наличност</label>
                 <select name="stockStatus" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-gold outline-none bg-white">
@@ -248,15 +227,144 @@ function AddProductForm() {
                   <option>Изчерпан</option>
                 </select>
               </div>
-              
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Материал</label>
-                <input name="material" type="text" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-gold outline-none" placeholder="напр. Орех" />
+                <input name="material" type="text" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-gold outline-none" />
               </div>
             </div>
           </div>
         </div>
       </div>
     </form>
+  );
+}
+
+function ProductList() {
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editData, setEditData] = useState<any>({});
+
+  const fetchProducts = async () => {
+    setLoading(true);
+    const res = await getProducts();
+    if (res.success) {
+      setProducts(res.products || []);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const handleDelete = async (id: string, imageUrl: string) => {
+    if (confirm('Сигурни ли сте, че искате да изтриете този продукт?')) {
+      await deleteProduct(id, imageUrl);
+      fetchProducts();
+    }
+  };
+
+  const handleEdit = (product: any) => {
+    setEditingId(product.id);
+    setEditData({ ...product });
+  };
+
+  const handleSave = async (id: string) => {
+    await updateProduct(id, editData);
+    setEditingId(null);
+    fetchProducts();
+  };
+
+  if (loading) {
+    return <div className="p-8 text-center text-gray-500">Зареждане на продуктите...</div>;
+  }
+
+  return (
+    <div className="max-w-6xl mx-auto">
+      <h2 className="text-2xl font-bold text-gray-800 mb-6">Всички Продукти ({products.length})</h2>
+      
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-gray-50 border-b border-gray-200">
+                <th className="p-4 font-semibold text-gray-600">Снимка</th>
+                <th className="p-4 font-semibold text-gray-600">Име</th>
+                <th className="p-4 font-semibold text-gray-600">Цена</th>
+                <th className="p-4 font-semibold text-gray-600">Наличност</th>
+                <th className="p-4 font-semibold text-gray-600">Действия</th>
+              </tr>
+            </thead>
+            <tbody>
+              {products.map(p => (
+                <tr key={p.id} className="border-b border-gray-100 hover:bg-gray-50">
+                  <td className="p-4">
+                    <img src={p.image} alt="thumb" className="w-16 h-16 object-cover rounded shadow-sm border border-gray-200" />
+                  </td>
+                  <td className="p-4">
+                    {editingId === p.id ? (
+                      <input 
+                        type="text" 
+                        value={editData.name_bg} 
+                        onChange={e => setEditData({...editData, name_bg: e.target.value, name: e.target.value})}
+                        className="border border-gray-300 rounded px-2 py-1 w-full"
+                      />
+                    ) : (
+                      <span className="font-medium text-gray-800">{p.name_bg || p.name}</span>
+                    )}
+                  </td>
+                  <td className="p-4">
+                    {editingId === p.id ? (
+                      <input 
+                        type="number" 
+                        value={editData.price} 
+                        onChange={e => setEditData({...editData, price: parseFloat(e.target.value)})}
+                        className="border border-gray-300 rounded px-2 py-1 w-24"
+                      />
+                    ) : (
+                      <span className="text-custom-gold font-bold">{Number(p.price).toFixed(2)} лв.</span>
+                    )}
+                  </td>
+                  <td className="p-4">
+                    {editingId === p.id ? (
+                      <select 
+                        value={editData.stockStatus} 
+                        onChange={e => setEditData({...editData, stockStatus: e.target.value})}
+                        className="border border-gray-300 rounded px-2 py-1"
+                      >
+                        <option>В наличност</option>
+                        <option>Изработва се по поръчка</option>
+                        <option>Изчерпан</option>
+                      </select>
+                    ) : (
+                      <span className="text-sm text-gray-500">{p.stockStatus}</span>
+                    )}
+                  </td>
+                  <td className="p-4">
+                    {editingId === p.id ? (
+                      <div className="flex gap-2">
+                        <button onClick={() => handleSave(p.id)} className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-sm">Запази</button>
+                        <button onClick={() => setEditingId(null)} className="px-3 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 text-sm">Отказ</button>
+                      </div>
+                    ) : (
+                      <div className="flex gap-3">
+                        <button onClick={() => handleEdit(p)} className="text-blue-500 hover:text-blue-700"><Edit size={18} /></button>
+                        <button onClick={() => handleDelete(p.id, p.image)} className="text-red-500 hover:text-red-700"><Trash2 size={18} /></button>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              ))}
+              {products.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="p-8 text-center text-gray-500">Няма намерени продукти.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   );
 }

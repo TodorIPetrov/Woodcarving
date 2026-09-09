@@ -67,3 +67,66 @@ export async function addProduct(formData: FormData) {
     return { success: false, error: "Грешка при добавяне: " + error.message };
   }
 }
+
+export async function getProducts() {
+  try {
+    const snapshot = await db.collection("products").orderBy("createdAt", "desc").get();
+    const products = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+      createdAt: doc.data().createdAt?.toDate()?.toISOString() || null
+    }));
+    return { success: true, products };
+  } catch (error: any) {
+    console.error("Failed to fetch products:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function deleteProduct(productId: string, imageUrl: string) {
+  try {
+    // 1. Delete from Firestore
+    await db.collection("products").doc(productId).delete();
+    
+    // 2. Try to delete from Storage if it's a Firebase URL
+    if (imageUrl && imageUrl.includes("storage.googleapis.com")) {
+      const bucket = admin.storage().bucket(process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET);
+      // Extract file path from URL
+      const urlParts = imageUrl.split(`${bucket.name}/`);
+      if (urlParts.length > 1) {
+        const filePath = urlParts[1].split('?')[0]; // Handle potential query params
+        try {
+          await bucket.file(decodeURIComponent(filePath)).delete();
+        } catch (e) {
+          console.warn("Could not delete file from storage, perhaps already deleted:", e);
+        }
+      }
+    }
+
+    revalidatePath("/[lang]/catalogue", "page");
+    revalidatePath("/[lang]/admin", "page");
+    return { success: true };
+  } catch (error: any) {
+    console.error("Failed to delete product:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function updateProduct(productId: string, data: any) {
+  try {
+    const docRef = db.collection("products").doc(productId);
+    await docRef.update({
+      ...data,
+      isMadeToOrder: data.stockStatus === "Изработва се по поръчка"
+    });
+    
+    revalidatePath("/[lang]/catalogue", "page");
+    revalidatePath("/[lang]/admin", "page");
+    return { success: true };
+  } catch (error: any) {
+    console.error("Failed to update product:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+
