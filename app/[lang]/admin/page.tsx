@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Upload, Plus, Package, CheckCircle, List, Lock, Trash2, Edit } from 'lucide-react';
 import { addProduct, getProducts, deleteProduct, updateProduct } from '@/lib/actions/product';
+import imageCompression from 'browser-image-compression';
 
 export default function AdminPanel() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -144,7 +145,23 @@ function AddProductForm({ initialData, onCancelEdit }: { initialData?: any, onCa
     setMessage({ type: '', text: '' });
 
     const formData = new FormData(e.currentTarget);
-    files.forEach(f => formData.append('images', f));
+    
+    // Compress images before upload
+    const options = {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 1920,
+      useWebWorker: true
+    };
+    
+    for (const f of files) {
+      try {
+        const compressedFile = await imageCompression(f, options);
+        formData.append('images', compressedFile);
+      } catch (error) {
+        console.error("Image compression error", error);
+        formData.append('images', f); // fallback to original
+      }
+    }
     
     // Pass existing images that were NOT deleted
     const oldImagesLeft = imagesPreview.filter(p => p.startsWith('http'));

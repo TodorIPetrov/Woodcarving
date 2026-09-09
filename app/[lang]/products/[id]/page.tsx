@@ -1,6 +1,33 @@
+import { Metadata } from "next";
 import { getDictionary } from "@/dictionaries/getDictionary";
 import { db } from "@/lib/firebase/admin";
 import ProductClient from "./ProductClient";
+
+export async function generateMetadata({ params }: { params: { lang: string, id: string } }): Promise<Metadata> {
+  let title = "Kazanlak Woodcarving";
+  let description = "Premium handmade woodcarvings.";
+  let imageUrl = "";
+
+  try {
+    const doc = await db.collection("products").doc(params.id).get();
+    if (doc.exists) {
+      const data = doc.data() as any;
+      title = data[`name_${params.lang}`] || data.name || title;
+      description = data[`description_${params.lang}`] || data.description || description;
+      imageUrl = (data.images && data.images.length > 0) ? data.images[0] : (data.image || "");
+    }
+  } catch (error) {}
+
+  return {
+    title: `${title} | Kazanlak Woodcarving`,
+    description: description.substring(0, 160),
+    openGraph: {
+      title: title,
+      description: description.substring(0, 160),
+      images: imageUrl ? [{ url: imageUrl }] : [],
+    },
+  };
+}
 
 export default async function ProductPage({ params }: { params: { lang: string, id: string } }) {
   const dict = await getDictionary(params.lang as any);

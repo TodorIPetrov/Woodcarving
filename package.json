@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "browser-image-compression": "^2.0.2",
     "dotenv": "^17.4.2",
     "firebase": "^12.17.0",
     "firebase-admin": "^12.1.1",
