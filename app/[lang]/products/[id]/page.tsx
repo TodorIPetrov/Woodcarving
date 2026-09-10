@@ -3,9 +3,12 @@ import { getDictionary } from "@/dictionaries/getDictionary";
 import { db } from "@/lib/firebase/admin";
 import ProductClient from "./ProductClient";
 
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://woodcarvingbg.eu';
+
 export async function generateMetadata({ params }: { params: { lang: string, id: string } }): Promise<Metadata> {
+  const dict = await getDictionary(params.lang as any);
   let title = "Kazanlak Woodcarving";
-  let description = "Premium handmade woodcarvings.";
+  let description = dict.metadata.site_description;
   let imageUrl = "";
 
   try {
@@ -18,6 +21,8 @@ export async function generateMetadata({ params }: { params: { lang: string, id:
     }
   } catch (error) {}
 
+  const otherLang = params.lang === 'bg' ? 'en' : 'bg';
+
   return {
     title: `${title} | Kazanlak Woodcarving`,
     description: description.substring(0, 160),
@@ -25,6 +30,21 @@ export async function generateMetadata({ params }: { params: { lang: string, id:
       title: title,
       description: description.substring(0, 160),
       images: imageUrl ? [{ url: imageUrl }] : [],
+      type: 'website',
+      locale: params.lang === 'bg' ? 'bg_BG' : 'en_US',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: title,
+      description: description.substring(0, 160),
+      images: imageUrl ? [imageUrl] : [],
+    },
+    alternates: {
+      canonical: `${baseUrl}/${params.lang}/products/${params.id}`,
+      languages: {
+        'bg': `${baseUrl}/bg/products/${params.id}`,
+        'en': `${baseUrl}/en/products/${params.id}`,
+      },
     },
   };
 }
@@ -43,7 +63,7 @@ export default async function ProductPage({ params }: { params: { lang: string, 
         name: data[`name_${params.lang}`] || data.name || '',
         description: data[`description_${params.lang}`] || data.description || '',
         woodType: data[`woodType_${params.lang}`] || data.woodType || '',
-        createdAt: data.createdAt?.toDate()?.toISOString() || null
+        createdAt: data.createdAt?.toDate?.()?.toISOString() || null
       };
     }
   } catch (error) {
@@ -63,6 +83,11 @@ export default async function ProductPage({ params }: { params: { lang: string, 
     };
   }
 
+  // Build image URL for schema
+  const schemaImage = (product.images && product.images.length > 0) 
+    ? product.images[0] 
+    : (product.image?.startsWith('http') ? product.image : `${baseUrl}${product.image || ''}`);
+
   return (
     <>
       <script
@@ -70,21 +95,29 @@ export default async function ProductPage({ params }: { params: { lang: string, 
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "VisualArtwork",
+            "@type": "Product",
             "name": product.name,
-            "image": "https://example.com" + product.image,
+            "image": schemaImage,
             "description": product.description,
-            "artMedium": "Wood",
+            "brand": {
+              "@type": "Brand",
+              "name": "Kazanlak Woodcarving"
+            },
+            "material": product.woodType || "Wood",
             "offers": {
               "@type": "Offer",
               "price": product.price,
               "priceCurrency": "BGN",
-              "availability": product.isMadeToOrder ? "https://schema.org/PreOrder" : "https://schema.org/InStock"
+              "availability": product.isMadeToOrder ? "https://schema.org/PreOrder" : "https://schema.org/InStock",
+              "seller": {
+                "@type": "Organization",
+                "name": "Kazanlak Woodcarving"
+              }
             }
           })
         }}
       />
-      <ProductClient product={product} dict={dict.product} />
+      <ProductClient product={product} dict={dict.product} lang={params.lang} />
     </>
   );
 }

@@ -1,5 +1,30 @@
 import Image from "next/image";
+import { Metadata } from "next";
 import { getDictionary } from "@/dictionaries/getDictionary";
+
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://woodcarvingbg.eu';
+
+export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
+  const dict = await getDictionary(params.lang as any);
+  
+  return {
+    title: dict.metadata.about_title,
+    description: dict.metadata.about_description,
+    openGraph: {
+      title: dict.metadata.about_title,
+      description: dict.metadata.about_description,
+      type: 'website',
+      locale: params.lang === 'bg' ? 'bg_BG' : 'en_US',
+    },
+    alternates: {
+      canonical: `${baseUrl}/${params.lang}/about`,
+      languages: {
+        'bg': `${baseUrl}/bg/about`,
+        'en': `${baseUrl}/en/about`,
+      },
+    },
+  };
+}
 
 export default async function AboutPage({ params }: { params: { lang: string } }) {
   const dict = await getDictionary(params.lang as any);

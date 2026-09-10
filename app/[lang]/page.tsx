@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { db } from "@/lib/firebase/admin";
 import { getDictionary } from "@/dictionaries/getDictionary";
 
@@ -50,9 +51,9 @@ export default async function Home({ params }: { params: { lang: string } }) {
               
               return (
               <Link href={`/${params.lang}/products/${p.id}`} key={p.id} className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 border border-gray-100 flex flex-col h-full cursor-pointer group">
-                <div className="h-48 bg-custom-parchment p-4 flex items-center justify-center border-b border-gray-50 overflow-hidden">
+                <div className="relative h-48 bg-custom-parchment p-4 flex items-center justify-center border-b border-gray-50 overflow-hidden">
                    {imageSrc ? (
-                     <img src={imageSrc} alt={productName} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                     <Image src={imageSrc} alt={productName} fill className="object-cover group-hover:scale-105 transition-transform duration-700" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw" />
                    ) : (
                      <div className="w-full h-full border border-dashed border-gray-300 rounded flex items-center justify-center text-gray-400 text-xs text-center p-2">Липсва снимка:<br/>{productName}</div>
                    )}

@@ -1,6 +1,31 @@
-import Link from "next/link";
+import { Metadata } from "next";
 import { db } from "@/lib/firebase/admin";
 import { getDictionary } from "@/dictionaries/getDictionary";
+import CatalogueClient from "@/components/CatalogueClient";
+
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://woodcarvingbg.eu';
+
+export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
+  const dict = await getDictionary(params.lang as any);
+  
+  return {
+    title: dict.metadata.catalogue_title,
+    description: dict.metadata.catalogue_description,
+    openGraph: {
+      title: dict.metadata.catalogue_title,
+      description: dict.metadata.catalogue_description,
+      type: 'website',
+      locale: params.lang === 'bg' ? 'bg_BG' : 'en_US',
+    },
+    alternates: {
+      canonical: `${baseUrl}/${params.lang}/catalogue`,
+      languages: {
+        'bg': `${baseUrl}/bg/catalogue`,
+        'en': `${baseUrl}/en/catalogue`,
+      },
+    },
+  };
+}
 
 export default async function CataloguePage({ params }: { params: { lang: string } }) {
   const dict = await getDictionary(params.lang as any);
@@ -8,65 +33,44 @@ export default async function CataloguePage({ params }: { params: { lang: string
   let products: any[] = [];
   try {
     const snapshot = await db.collection("products").orderBy("createdAt", "desc").get();
-    products = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    products = snapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        name: data[`name_${params.lang}`] || data.name || '',
+        description: data[`description_${params.lang}`] || data.description || '',
+        price: data.price || 0,
+        image: data.image,
+        images: data.images,
+        category: data.category,
+        isMadeToOrder: data.isMadeToOrder || false,
+      };
+    });
   } catch (error) {
     console.error("Error fetching products from Firestore:", error);
     // Fallback if DB isn't ready
     products = [
-      { id: "1", name: dict.product.fallback_name || "Orthodox Icon Relief - St. George", price: 250, description: dict.product.fallback_desc || "Hand-carved wooden relief.", image: "/images/st-george.jpg", isMadeToOrder: true },
-      { id: "2", name: params.lang === 'bg' ? "Релеф Тайната Вечеря" : "Last Supper Relief", price: 550, description: params.lang === 'bg' ? "Спираща дъха дърворезба на Тайната Вечеря." : "Breathtaking carving of the Last Supper.", image: "/images/last-supper.jpg", isMadeToOrder: true },
-      { id: "3", name: params.lang === 'bg' ? "Винтидж Флорален Плакет" : "Vintage Floral Plaque", price: 180, description: params.lang === 'bg' ? "Възстановен мотив от български таванни орнаменти." : "Reclaimed Bulgaria ceiling ornament pattern.", image: "/images/floral-plaque.jpg", isMadeToOrder: false }
+      { id: "1", name: dict.product.fallback_name || "Orthodox Icon Relief - St. George", price: 250, description: dict.product.fallback_desc || "Hand-carved wooden relief.", image: "/images/st-george.jpg", isMadeToOrder: true, category: "Icons" },
+      { id: "2", name: params.lang === 'bg' ? "Релеф Тайната Вечеря" : "Last Supper Relief", price: 550, description: params.lang === 'bg' ? "Спираща дъха дърворезба на Тайната Вечеря." : "Breathtaking carving of the Last Supper.", image: "/images/last-supper.jpg", isMadeToOrder: true, category: "Reliefs" },
+      { id: "3", name: params.lang === 'bg' ? "Винтидж Флорален Плакет" : "Vintage Floral Plaque", price: 180, description: params.lang === 'bg' ? "Възстановен мотив от български таванни орнаменти." : "Reclaimed Bulgaria ceiling ornament pattern.", image: "/images/floral-plaque.jpg", isMadeToOrder: false, category: "Panels" }
     ];
   }
 
   return (
     <div className="flex flex-col items-center w-full">
       <section className="w-full max-w-7xl mx-auto px-4 py-12 md:py-20 relative z-20">
-        <div className="text-center mb-16">
+        <div className="text-center mb-12">
           <h1 className="font-serif text-4xl md:text-5xl text-custom-forest font-bold mb-4">{dict.catalogue.title}</h1>
           <p className="text-custom-charcoal/80 max-w-2xl mx-auto font-serif italic">
             {dict.catalogue.subtitle}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {products.map((p) => {
-            const productName = p[`name_${params.lang}`] || p.name || '';
-            const productDesc = p[`description_${params.lang}`] || p.description || '';
-            const imageSrc = (p.images && p.images.length > 0) ? p.images[0] : p.image;
-            
-            return (
-            <Link href={`/${params.lang}/products/${p.id}`} key={p.id} className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 border border-gray-100 flex flex-col h-full group cursor-pointer">
-              <div className="relative h-64 bg-custom-parchment p-4 flex items-center justify-center border-b border-gray-50 overflow-hidden">
-                 {imageSrc ? (
-                   <img src={imageSrc} alt={productName} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                 ) : (
-                   <div className="w-full h-full border border-dashed border-gray-300 rounded flex items-center justify-center text-gray-400 text-xs bg-custom-parchment group-hover:scale-105 transition-transform duration-700 text-center p-2">Липсва снимка:<br/>{productName}</div>
-                 )}
-                 
-                 {p.isMadeToOrder && (
-                   <div className="absolute top-4 left-4 bg-white/90 backdrop-blur text-amber-700 text-[10px] font-bold px-2 py-1 rounded shadow-sm border border-amber-100 uppercase tracking-wider">
-                     {dict.catalogue.made_to_order}
-                   </div>
-                 )}
-              </div>
-              
-              <div className="p-6 flex flex-col flex-grow text-center">
-                <h4 className="font-bold text-custom-charcoal text-lg mb-2 group-hover:text-custom-gold transition-colors">{productName}</h4>
-                <p className="text-sm text-custom-muted mb-6 flex-grow line-clamp-3">{productDesc}</p>
-                <div className="mt-auto">
-                  <p className="text-custom-gold font-bold text-xl mb-4">{p.price.toFixed(2)} BGN</p>
-                  <div className="block w-full py-3 bg-custom-forest hover:bg-custom-forest/90 text-white font-bold tracking-widest uppercase transition-colors rounded shadow-md">
-                    {dict.catalogue.view || "Виж"}
-                  </div>
-                </div>
-              </div>
-            </Link>
-          )})}
-        </div>
+        <CatalogueClient 
+          products={products} 
+          dict={dict.catalogue} 
+          lang={params.lang} 
+        />
       </section>
     </div>
   );

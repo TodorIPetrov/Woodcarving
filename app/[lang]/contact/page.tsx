@@ -1,4 +1,29 @@
+import { Metadata } from "next";
 import { getDictionary } from "@/dictionaries/getDictionary";
+
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://woodcarvingbg.eu';
+
+export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
+  const dict = await getDictionary(params.lang as any);
+  
+  return {
+    title: dict.metadata.contact_title,
+    description: dict.metadata.contact_description,
+    openGraph: {
+      title: dict.metadata.contact_title,
+      description: dict.metadata.contact_description,
+      type: 'website',
+      locale: params.lang === 'bg' ? 'bg_BG' : 'en_US',
+    },
+    alternates: {
+      canonical: `${baseUrl}/${params.lang}/contact`,
+      languages: {
+        'bg': `${baseUrl}/bg/contact`,
+        'en': `${baseUrl}/en/contact`,
+      },
+    },
+  };
+}
 
 export default async function ContactPage({ params }: { params: { lang: string } }) {
   const dict = await getDictionary(params.lang as any);
@@ -40,7 +65,7 @@ export default async function ContactPage({ params }: { params: { lang: string }
                 <svg className="w-6 h-6 text-custom-gold mt-1 mr-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                 <div>
                   <h4 className="font-bold text-custom-charcoal text-sm uppercase tracking-wider mb-1">{dict.contact.email_label}</h4>
-                  <p className="text-custom-muted">info@kazanlakwoodcarving.com</p>
+                  <p className="text-custom-muted">info@woodcarvingbg.eu</p>
                 </div>
               </div>
             </div>
