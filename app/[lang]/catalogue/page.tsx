@@ -27,7 +27,13 @@ export async function generateMetadata({ params }: { params: { lang: string } })
   };
 }
 
-export default async function CataloguePage({ params }: { params: { lang: string } }) {
+export default async function CataloguePage({ 
+  params,
+  searchParams 
+}: { 
+  params: { lang: string };
+  searchParams?: { category?: string };
+}) {
   const dict = await getDictionary(params.lang as any);
   
   let products: any[] = [];
@@ -70,6 +76,7 @@ export default async function CataloguePage({ params }: { params: { lang: string
           products={products} 
           dict={dict.catalogue} 
           lang={params.lang} 
+          initialCategory={searchParams?.category || "all"}
         />
       </section>
     </div>

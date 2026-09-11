@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { getDictionary } from "@/dictionaries/getDictionary";
+import ContactForm from "@/components/ContactForm";
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://woodcarvingbg.eu';
 
@@ -82,26 +83,7 @@ export default async function ContactPage({ params }: { params: { lang: string }
           </div>
 
           {/* Contact Form */}
-          <div className="bg-white p-8 rounded-lg shadow-sm border border-gray-100">
-            <h3 className="font-serif text-2xl text-custom-forest mb-6">{dict.contact.send_message_title}</h3>
-            <form className="space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-custom-charcoal uppercase tracking-wider mb-2">{dict.contact.name_label}</label>
-                <input type="text" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded focus:outline-none focus:border-custom-gold focus:bg-white transition-colors" placeholder={dict.contact.name_placeholder} />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-custom-charcoal uppercase tracking-wider mb-2">{dict.contact.email_label}</label>
-                <input type="email" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded focus:outline-none focus:border-custom-gold focus:bg-white transition-colors" placeholder={dict.contact.email_placeholder} />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-custom-charcoal uppercase tracking-wider mb-2">{dict.contact.message_label}</label>
-                <textarea rows={4} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded focus:outline-none focus:border-custom-gold focus:bg-white transition-colors" placeholder={dict.contact.message_placeholder}></textarea>
-              </div>
-              <button type="button" className="w-full py-4 bg-custom-forest hover:bg-custom-forest/90 text-white font-bold tracking-widest uppercase text-sm rounded shadow-md transition-colors mt-4">
-                {dict.contact.send_button}
-              </button>
-            </form>
-          </div>
+          <ContactForm dict={dict.contact} />
 
         </div>
       </section>
