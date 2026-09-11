@@ -21,6 +21,8 @@ export default function ProductUploadForm() {
     woodType_en: "Walnut",
     personalization: false,
     personalizationSurcharge: "10",
+    width: "",
+    height: "",
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
 
@@ -65,6 +67,9 @@ export default function ProductUploadForm() {
         woodType_en: formData.woodType_en,
         personalization: formData.personalization,
         personalizationSurcharge: formData.personalization ? parseFloat(formData.personalizationSurcharge) : 0,
+        width: formData.width ? parseFloat(formData.width) : null,
+        height: formData.height ? parseFloat(formData.height) : null,
+        dimensions: formData.width && formData.height ? `${formData.width} × ${formData.height} см` : "",
         image: imageUrl,
         createdAt: new Date().toISOString(),
       };
@@ -83,6 +88,8 @@ export default function ProductUploadForm() {
         woodType_en: "Walnut",
         personalization: false,
         personalizationSurcharge: "10",
+        width: "",
+        height: "",
       });
       setImageFile(null);
       (document.getElementById('image-upload') as HTMLInputElement).value = '';
@@ -175,6 +182,18 @@ export default function ProductUploadForm() {
               <option value="Linden">Linden</option>
               <option value="Cherry">Cherry</option>
             </select>
+          </div>
+        </div>
+
+        {/* Dimensions */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Широчина (см)</label>
+            <input type="number" step="0.1" min="0" name="width" value={formData.width} onChange={handleInputChange} placeholder="30" className="w-full p-2 border border-gray-300 rounded focus:ring-custom-gold focus:border-custom-gold outline-none" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Височина (см)</label>
+            <input type="number" step="0.1" min="0" name="height" value={formData.height} onChange={handleInputChange} placeholder="45" className="w-full p-2 border border-gray-300 rounded focus:ring-custom-gold focus:border-custom-gold outline-none" />
           </div>
         </div>
 

@@ -62,6 +62,7 @@
     "personalization": "Personalization",
     "wood_finish": "Wood Finish",
     "size": "Size",
+    "dimensions": "Dimensions",
     "engraving": "Custom Engraving",
     "engraving_placeholder": "Enter text for engraving (+€10.00)",
     "engraving_label": "Engraving Text (Max 20 characters)",

@@ -62,6 +62,7 @@
     "personalization": "Персонализация",
     "wood_finish": "Финиш",
     "size": "Размер",
+    "dimensions": "Размери",
     "engraving": "Гравиране по поръчка",
     "engraving_placeholder": "Въведете текст за гравиране (+10.00 €)",
     "engraving_label": "Текст за гравиране (Макс. 20 символа)",

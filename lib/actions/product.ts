@@ -14,6 +14,8 @@ export async function addProduct(formData: FormData) {
     const category = formData.get("category") as string;
     const stockStatus = formData.get("stockStatus") as string;
     const material = formData.get("material") as string;
+    const widthStr = formData.get("width") as string;
+    const heightStr = formData.get("height") as string;
     const files = formData.getAll("images") as File[];
 
     if (!nameBG || !priceStr || files.length === 0) {
@@ -21,6 +23,9 @@ export async function addProduct(formData: FormData) {
     }
 
     const price = parseFloat(priceStr);
+    const width = widthStr ? parseFloat(widthStr) : null;
+    const height = heightStr ? parseFloat(heightStr) : null;
+    const dimensions = width && height ? `${width} × ${height} см` : (width ? `${width} см` : (height ? `${height} см` : ""));
     
     // Upload images to Firebase Storage
     const bucket = admin.storage().bucket(process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET);
@@ -49,6 +54,9 @@ export async function addProduct(formData: FormData) {
       category: category,
       stockStatus: stockStatus,
       material: material,
+      width: width,
+      height: height,
+      dimensions: dimensions,
       images: imageUrls,
       image: imageUrls[0] || "", // fallback legacy
       isMadeToOrder: stockStatus === "Изработва се по поръчка",
@@ -58,6 +66,7 @@ export async function addProduct(formData: FormData) {
     await newDoc.set(productData);
 
     revalidatePath("/[lang]/catalogue", "page");
+    revalidatePath("/[lang]/products/[id]", "page");
     revalidatePath("/[lang]/admin", "page");
 
     return { success: true, message: "Продуктът е добавен успешно!" };
@@ -129,9 +138,15 @@ export async function updateProduct(formData: FormData) {
     const category = formData.get("category") as string;
     const stockStatus = formData.get("stockStatus") as string;
     const material = formData.get("material") as string;
+    const widthStr = formData.get("width") as string;
+    const heightStr = formData.get("height") as string;
     const files = formData.getAll("images") as File[];
     const existingImagesStr = formData.get("existingImages") as string;
     const existingImages = existingImagesStr ? JSON.parse(existingImagesStr) : [];
+
+    const width = widthStr ? parseFloat(widthStr) : null;
+    const height = heightStr ? parseFloat(heightStr) : null;
+    const dimensions = width && height ? `${width} × ${height} см` : (width ? `${width} см` : (height ? `${height} см` : ""));
 
     const updateData: any = {
       name: nameBG,
@@ -143,6 +158,9 @@ export async function updateProduct(formData: FormData) {
       category,
       stockStatus,
       material,
+      width,
+      height,
+      dimensions,
       isMadeToOrder: stockStatus === "Изработва се по поръчка"
     };
 
@@ -167,6 +185,7 @@ export async function updateProduct(formData: FormData) {
     await db.collection("products").doc(id).update(updateData);
     
     revalidatePath("/[lang]/catalogue", "page");
+    revalidatePath("/[lang]/products/[id]", "page");
     revalidatePath("/[lang]/admin", "page");
     return { success: true, message: "Продуктът е обновен успешно!" };
   } catch (error: any) {

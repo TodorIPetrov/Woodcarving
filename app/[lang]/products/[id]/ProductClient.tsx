@@ -68,10 +68,30 @@ export default function ProductClient({ product, dict, lang }: { product: any, d
           )}
         </div>
 
-        {product?.woodType && (
-          <div className="mb-4">
-            <span className="text-xs font-bold text-custom-charcoal uppercase tracking-wider">{dict?.wood_finish || "Wood"}: </span>
-            <span className="text-sm text-custom-muted">{product.woodType}</span>
+        {/* Attributes Grid */}
+        {((product?.dimensions || (product?.width && product?.height)) || product?.material || product?.woodType) && (
+          <div className="flex flex-wrap gap-6 mb-6 p-4 bg-white rounded-lg border border-gray-100 shadow-sm">
+            {(product?.dimensions || (product?.width && product?.height)) && (
+              <div>
+                <span className="text-xs font-bold text-custom-charcoal uppercase tracking-wider block mb-0.5">
+                  {dict?.dimensions || (lang === 'bg' ? 'Размери' : 'Dimensions')}:
+                </span>
+                <span className="text-sm font-semibold text-custom-forest">
+                  {product.dimensions || `${product.width} × ${product.height} см`}
+                </span>
+              </div>
+            )}
+
+            {(product?.material || product?.woodType) && (
+              <div>
+                <span className="text-xs font-bold text-custom-charcoal uppercase tracking-wider block mb-0.5">
+                  {dict?.wood_finish || (lang === 'bg' ? 'Материал' : 'Wood')}:
+                </span>
+                <span className="text-sm font-semibold text-custom-charcoal/80">
+                  {product.material || product.woodType}
+                </span>
+              </div>
+            )}
           </div>
         )}
 

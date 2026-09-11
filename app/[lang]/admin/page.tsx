@@ -386,7 +386,42 @@ function AddProductForm({ initialData, onCancelEdit }: { initialData?: any, onCa
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Материал</label>
-                <input defaultValue={initialData?.material || ''} name="material" type="text" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-gold outline-none" />
+                <input defaultValue={initialData?.material || ''} name="material" type="text" placeholder="напр. Орех, Дъб, Липа" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-gold outline-none" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Размери</label>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">Широчина</label>
+                    <div className="relative">
+                      <input 
+                        defaultValue={initialData?.width || ''} 
+                        name="width" 
+                        type="number" 
+                        step="0.1" 
+                        min="0"
+                        className="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-gold outline-none" 
+                        placeholder="30" 
+                      />
+                      <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-400 text-xs">см</div>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">Височина</label>
+                    <div className="relative">
+                      <input 
+                        defaultValue={initialData?.height || ''} 
+                        name="height" 
+                        type="number" 
+                        step="0.1" 
+                        min="0"
+                        className="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-gold outline-none" 
+                        placeholder="45" 
+                      />
+                      <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-400 text-xs">см</div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -447,10 +482,15 @@ function ProductList({ onEdit }: { onEdit: (p: any) => void }) {
                     <img src={p.image} alt="thumb" className="w-16 h-16 object-cover rounded shadow-sm border border-gray-200" />
                   </td>
                   <td className="p-4">
-                    <span className="font-medium text-gray-800">{p.name_bg || p.name}</span>
+                    <span className="font-medium text-gray-800 block">{p.name_bg || p.name}</span>
+                    {(p.dimensions || (p.width && p.height)) && (
+                      <span className="inline-block mt-1 px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded border border-gray-200">
+                        {p.dimensions || `${p.width} × ${p.height} см`}
+                      </span>
+                    )}
                   </td>
                   <td className="p-4">
-                    <span className="text-custom-gold font-bold">{Number(p.price).toFixed(2)} лв.</span>
+                    <span className="text-custom-gold font-bold">€{Number(p.price).toFixed(2)}</span>
                   </td>
                   <td className="p-4">
                     <span className="text-sm text-gray-500">{p.stockStatus}</span>
