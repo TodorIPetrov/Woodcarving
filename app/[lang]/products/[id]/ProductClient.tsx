@@ -21,7 +21,7 @@ export default function ProductClient({ product, dict, lang }: { product: any, d
   
   const phoneNumber = "+359878437966";
   const engravingText = engraving ? (lang === 'bg' ? ` с гравиране: "${engraving}"` : ` with engraving: "${engraving}"`) : '';
-  const messageTemplate = (dict?.inquiry_message || 'Hello, I am interested in the product "{name}" ({price} BGN){engraving}.')
+  const messageTemplate = (dict?.inquiry_message || 'Hello, I am interested in the product "{name}" (€{price}){engraving}.')
     .replace('{name}', product?.name || '')
     .replace('{price}', totalPrice.toFixed(2))
     .replace('{engraving}', engravingText);
@@ -59,7 +59,7 @@ export default function ProductClient({ product, dict, lang }: { product: any, d
         <h1 className="font-serif text-3xl md:text-5xl text-custom-forest font-bold mb-4">{product?.name}</h1>
         
         <div className="flex items-center gap-4 mb-6">
-          <p className="text-2xl text-custom-gold font-semibold">{totalPrice.toFixed(2)} BGN</p>
+          <p className="text-2xl text-custom-gold font-semibold">€{totalPrice.toFixed(2)}</p>
           {product?.isMadeToOrder && (
             <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-700 text-xs font-semibold rounded-full border border-amber-200">
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -81,7 +81,7 @@ export default function ProductClient({ product, dict, lang }: { product: any, d
 
         <PersonalizationModule 
           basePrice={Number(product?.price) || 0} 
-          surcharge={20.00} 
+          surcharge={10.00} 
           onUpdate={handlePersonalizationUpdate}
           dict={dict}
         />

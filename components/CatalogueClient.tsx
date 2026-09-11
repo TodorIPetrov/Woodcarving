@@ -192,7 +192,7 @@ export default function CatalogueClient({
                   </p>
                   <div className="mt-auto">
                     <p className="text-custom-gold font-bold text-xl mb-4">
-                      {p.price.toFixed(2)} BGN
+                      €{p.price.toFixed(2)}
                     </p>
                     <div className="block w-full py-3 bg-custom-forest hover:bg-custom-forest/90 text-white font-bold tracking-widest uppercase transition-colors rounded shadow-md">
                       {dict.view}

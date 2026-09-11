@@ -1,11 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import LanguageSwitcher from "./LanguageSwitcher";
 
 export default function Header({ dict, lang }: { dict: any; lang: string }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Quick keyboard shortcut for admin access: Alt + A or Ctrl + Shift + A
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.altKey && e.key.toLowerCase() === 'a') || (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a')) {
+        e.preventDefault();
+        window.location.href = `/${lang}/admin`;
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [lang]);
 
   return (
     <header className="bg-white sticky top-0 z-50 shadow-sm border-b border-gray-100">

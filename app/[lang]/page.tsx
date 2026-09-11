@@ -61,7 +61,7 @@ export default async function Home({ params }: { params: { lang: string } }) {
                 <div className="p-6 flex flex-col flex-grow text-center">
                   <h4 className="font-bold text-custom-charcoal text-sm mb-2 group-hover:text-custom-gold transition-colors">{productName}</h4>
                   <p className="text-xs text-custom-muted mb-4 flex-grow line-clamp-3">{productDesc}</p>
-                  <p className="text-custom-gold font-bold mb-4">{p.price} BGN</p>
+                  <p className="text-custom-gold font-bold mb-4">€{p.price}</p>
                   <div className="block w-full py-2 bg-custom-forest hover:bg-custom-forest/90 text-white text-xs font-bold tracking-wider uppercase transition-colors rounded">
                     {dict.home.view_details}
                   </div>

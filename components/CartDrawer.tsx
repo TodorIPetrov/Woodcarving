@@ -82,7 +82,7 @@ export default function CartDrawer({ dict, lang }: { dict?: any, lang?: string }
                     )}
                   </div>
                   <div className="flex justify-between items-center mt-2">
-                    <span className="font-bold text-custom-gold">{item.price.toFixed(2)} BGN</span>
+                    <span className="font-bold text-custom-gold">€{item.price.toFixed(2)}</span>
                     <button 
                       onClick={() => removeItem(item.id)}
                       className="text-xs text-red-400 hover:text-red-600 underline"
@@ -100,7 +100,7 @@ export default function CartDrawer({ dict, lang }: { dict?: any, lang?: string }
           <div className="p-6 bg-white border-t border-gray-200">
             <div className="flex justify-between mb-4 font-bold text-lg">
               <span>{t.total}:</span>
-              <span className="text-custom-gold">{totalAmount.toFixed(2)} BGN</span>
+              <span className="text-custom-gold">€{totalAmount.toFixed(2)}</span>
             </div>
             <button 
               onClick={handleCheckout}

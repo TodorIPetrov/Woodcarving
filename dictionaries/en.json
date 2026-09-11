@@ -35,11 +35,11 @@
     "title": "OUR STORY",
     "subtitle": "Generations of dedication to the wood.",
     "heading": "From Kazanlak with Love",
-    "p1": "Nestled in the heart of the Rose Valley, our family workshop in Kazanlak has been shaping wood into art for over three generations. What started as a small endeavor by our grandfather carving simple spoons and bowls, has blossomed into a lifelong dedication to preserving the intricate, spiritual art of Bulgarian woodcarving.",
-    "p2": "We specialize in Orthodox Christian iconography, breathing life and reverence into every piece of walnut, oak, and linden we touch. Each stroke of the chisel is guided by centuries of tradition, yet crafted with a distinct, modern precision that ensures our pieces stand the test of time.",
+    "p1": "Nestled in the heart of the Rose Valley, our family workshop in Kazanlak has been shaping wood into art for over three generations.",
+    "p2": "We specialize in Orthodox Christian iconography, breathing life and reverence into every piece of walnut, oak, and linden we touch.",
     "quote": "\"Wood is alive. Our job is not to force it into a shape, but to reveal the story it already holds within its grain.\"",
-    "p3": "Because true art cannot be rushed, many of our pieces are <strong>Made to Order</strong>. This allows us to pour our complete focus into your specific commission, offering deep personalization such as custom engravings on the back of our plaques and icons.",
-    "p4": "When you purchase from us, you aren't just buying decor. You are taking home a piece of Bulgarian heritage, crafted with patience, reverence, and an unwavering commitment to quality."
+    "p3": "Because true art cannot be rushed, many of our pieces are <strong>Made to Order</strong>.",
+    "p4": "When you purchase from us, you aren't just buying decor. You are taking home a piece of Bulgarian heritage."
   },
   "contact": {
     "title": "Contact Us",
@@ -57,51 +57,50 @@
     "message_placeholder": "How can we help you?",
     "send_button": "Send Message"
   },
-  "cart": {
-    "title": "Your Cart",
-    "empty": "Your cart is empty.",
-    "subtotal": "Subtotal",
-    "taxes": "Estimated Taxes",
-    "shipping": "Shipping",
-    "total": "Total",
-    "checkout": "Checkout",
-    "processing": "Processing...",
-    "success_title": "Order Placed!",
-    "success_message": "Thank you for your order. We will contact you soon."
-  },
   "product": {
     "add_to_cart": "Add to Cart",
     "personalization": "Personalization",
     "wood_finish": "Wood Finish",
     "size": "Size",
     "engraving": "Custom Engraving",
-    "engraving_placeholder": "Enter text for engraving (+20.00 BGN)",
+    "engraving_placeholder": "Enter text for engraving (+€10.00)",
     "engraving_label": "Engraving Text (Max 20 characters)",
-    "made_to_order_takes": "Made to Order (Takes 2-3 weeks)",
+    "made_to_order_takes": "Made to Order (Takes {time})",
     "total": "Total",
     "fallback_name": "Orthodox Icon Relief - St. George",
-    "fallback_desc": "A meticulously hand-carved wooden relief depicting St. George. Crafted from premium walnut wood, finished with natural oils for lasting durability and a rich aesthetic.",
+    "fallback_desc": "A meticulously hand-carved wooden relief depicting St. George.",
     "order_via": "Order via:",
     "call": "Call",
     "viber": "Viber",
     "messenger": "Messenger",
     "no_image": "No image",
-    "inquiry_message": "Hello, I am interested in the product \"{name}\" ({price} BGN){engraving}."
+    "inquiry_message": "Hello, I am interested in the product \"{name}\" (€{price}){engraving}."
   },
   "footer": {
     "contact_info": "Contact Info",
-    "secure_payment": "Secure Payment",
-    "rights": "All rights reserved.",
-    "map_placeholder": "Google Map"
+    "privacy": "Privacy Policy",
+    "rights": "All rights reserved."
+  },
+  "cookie": {
+    "message": "This site uses cookies for analytics (Google Analytics) and marketing (Meta Pixel). By continuing to use this site, you agree to our",
+    "privacy_link": "Privacy Policy",
+    "accept": "Accept",
+    "decline": "Decline"
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "last_updated": "Last updated"
   },
   "metadata": {
     "site_title": "Kazanlak Woodcarving | Handcrafted Masterpieces",
     "site_description": "Premium handmade woodcarvings, personalized plaques, and Orthodox iconography from Kazanlak, Bulgaria.",
     "catalogue_title": "Catalogue | Kazanlak Woodcarving",
-    "catalogue_description": "Browse our full collection of hand-carved woodworks — icons, reliefs, panels, and custom commissions.",
+    "catalogue_description": "Browse our full collection of hand-carved woodworks.",
     "about_title": "Our Story | Kazanlak Woodcarving",
-    "about_description": "Three generations of dedication to wood. Learn the story of our family woodcarving workshop in Kazanlak, Bulgaria.",
+    "about_description": "Three generations of dedication to wood.",
     "contact_title": "Contact | Kazanlak Woodcarving",
-    "contact_description": "Get in touch with our woodcarving workshop in Kazanlak. Custom orders, personalization, and inquiries."
+    "contact_description": "Get in touch with our woodcarving workshop in Kazanlak.",
+    "privacy_title": "Privacy Policy | Kazanlak Woodcarving",
+    "privacy_description": "Personal data protection and privacy policy."
   }
 }

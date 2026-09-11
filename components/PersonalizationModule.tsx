@@ -39,7 +39,7 @@ export default function PersonalizationModule({ basePrice, surcharge, onUpdate, 
           checked={isPersonalized}
           onChange={(e) => handleToggle(e.target.checked)}
         />
-        <span className="text-lg font-medium text-custom-charcoal">{t.engraving} (+{surcharge.toFixed(2)} BGN)</span>
+        <span className="text-lg font-medium text-custom-charcoal">{t.engraving} (+€{surcharge.toFixed(2)})</span>
       </label>
 
       {isPersonalized && (

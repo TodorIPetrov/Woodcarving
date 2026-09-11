@@ -27,7 +27,7 @@ export default function PreviewCatalogue() {
             <div className="p-6 flex flex-col flex-grow text-center">
               <h4 className="font-bold text-custom-charcoal text-sm mb-2">{product.name}</h4>
               <p className="text-xs text-custom-muted mb-4 flex-grow line-clamp-3">{product.description}</p>
-              <p className="text-custom-gold font-bold mb-4">{product.price} BGN</p>
+              <p className="text-custom-gold font-bold mb-4">€{product.price}</p>
               <button className="block w-full py-2 bg-custom-forest hover:bg-custom-forest/90 text-white text-xs font-bold tracking-wider uppercase transition-colors rounded">
                 Виж Детайли
               </button>

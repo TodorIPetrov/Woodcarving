@@ -107,7 +107,7 @@ export default async function ProductPage({ params }: { params: { lang: string, 
             "offers": {
               "@type": "Offer",
               "price": product.price,
-              "priceCurrency": "BGN",
+              "priceCurrency": "EUR",
               "availability": product.isMadeToOrder ? "https://schema.org/PreOrder" : "https://schema.org/InStock",
               "seller": {
                 "@type": "Organization",

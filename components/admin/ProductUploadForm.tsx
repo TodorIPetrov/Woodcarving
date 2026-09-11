@@ -145,7 +145,7 @@ export default function ProductUploadForm() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Price */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Цена (BGN)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Цена (EUR)</label>
             <input required type="number" step="0.01" min="0" name="price" value={formData.price} onChange={handleInputChange} className="w-full p-2 border border-gray-300 rounded focus:ring-custom-gold focus:border-custom-gold outline-none" />
           </div>
 
@@ -196,7 +196,7 @@ export default function ProductUploadForm() {
 
           {formData.personalization && (
              <div>
-               <label className="block text-sm font-medium text-gray-700 mb-1">Такса за гравиране (BGN)</label>
+               <label className="block text-sm font-medium text-gray-700 mb-1">Такса за гравиране (EUR)</label>
                <input type="number" step="0.01" min="0" name="personalizationSurcharge" value={formData.personalizationSurcharge} onChange={handleInputChange} className="w-48 p-2 border border-gray-300 rounded focus:ring-custom-gold focus:border-custom-gold outline-none" />
              </div>
           )}
